@@ -36,7 +36,7 @@ class SessionFlowTest < ActionDispatch::IntegrationTest
     assert_nil cookies[:session_id].presence
 
     follow_redirect!
-    assert_select "div", /Try another email address or password/
+    assert_select ".flash", /Try another email address or password/
   end
 
   test "the wrong password is refused" do
@@ -54,7 +54,7 @@ class SessionFlowTest < ActionDispatch::IntegrationTest
     assert_redirected_to new_session_path
 
     follow_redirect!
-    assert_select "div", /Try another email address or password/
+    assert_select ".flash", /Try another email address or password/
   end
 
   test "a blank password is refused" do

@@ -31,9 +31,23 @@ module Publishing
 
     REQUIRED = %w[background foreground].freeze
 
+    # The ANSI dialect some themes speak (and the client's own template
+    # placeholders use): color1 is red, color2 green… 9-14 the brights.
+    ANSI_ALIASES = {
+      "red" => "color1", "green" => "color2", "yellow" => "color3",
+      "blue" => "color4", "magenta" => "color5", "cyan" => "color6",
+      "bright_red" => "color9", "bright_green" => "color10",
+      "bright_yellow" => "color11", "bright_blue" => "color12",
+      "bright_magenta" => "color13", "bright_cyan" => "color14"
+    }.freeze
+
     def self.parse(toml_text)
       data = TomlRB.parse(toml_text)
       colors = data.select { |_k, v| v.is_a?(String) }
+
+      ANSI_ALIASES.each do |name, ansi|
+        colors[name] = colors[ansi] if !colors[name]&.match?(HEX_COLOR) && colors[ansi]&.match?(HEX_COLOR)
+      end
 
       missing = REQUIRED.reject { |key| colors[key]&.match?(HEX_COLOR) }
       if missing.any?

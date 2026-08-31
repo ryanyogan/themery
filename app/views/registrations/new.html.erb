@@ -1,34 +1,44 @@
-<h1>Create your account</h1>
+<% content_for :title, "Sign up — Themery" %>
 
-<%= form_with model: @user, url: registration_path do |form| %>
-  <% if @user.errors.any? %>
-    <div class="form-errors">
-      <ul>
-        <% @user.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+<section class="auth">
+  <div class="auth__card">
+    <p class="hero__eyebrow">join the catalog</p>
+    <h1 class="auth__title">create your account</h1>
+    <p class="auth__lead">Publish themes and write reviews. Browsing, trying, and starring never need an account.</p>
 
-  <div>
-    <%= form.label :username %>
-    <%= form.text_field :username, required: true, autofocus: true, autocomplete: "username" %>
-  </div>
-  <div>
-    <%= form.label :email_address %>
-    <%= form.email_field :email_address, required: true, autocomplete: "email" %>
-  </div>
-  <div>
-    <%= form.label :password %>
-    <%= form.password_field :password, required: true, autocomplete: "new-password", maxlength: 72 %>
-  </div>
-  <div>
-    <%= form.label :password_confirmation %>
-    <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password", maxlength: 72 %>
-  </div>
+    <%= form_with model: @user, url: registration_path, class: "auth__form" do |form| %>
+      <% if @user.errors.any? %>
+        <div class="form-errors" role="alert">
+          <ul>
+            <% @user.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
 
-  <%= form.submit "Sign up" %>
-<% end %>
+      <div class="field <%= 'field--invalid' if @user.errors[:username].any? %>">
+        <%= form.label :username %>
+        <%= form.text_field :username, required: true, autofocus: true, autocomplete: "username",
+              placeholder: "lowercase, letters and hyphens" %>
+        <p class="hint">Your public author name: themery.dev/authors/<strong>you</strong></p>
+      </div>
+      <div class="field <%= 'field--invalid' if @user.errors[:email_address].any? %>">
+        <%= form.label :email_address, "email" %>
+        <%= form.email_field :email_address, required: true, autocomplete: "email" %>
+      </div>
+      <div class="field <%= 'field--invalid' if @user.errors[:password].any? %>">
+        <%= form.label :password %>
+        <%= form.password_field :password, required: true, autocomplete: "new-password", maxlength: 72 %>
+      </div>
+      <div class="field <%= 'field--invalid' if @user.errors[:password_confirmation].any? %>">
+        <%= form.label :password_confirmation, "confirm password" %>
+        <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password", maxlength: 72 %>
+      </div>
 
-<p><%= link_to "Already have an account? Sign in", new_session_path %></p>
+      <%= form.submit "Sign up", class: "auth__submit" %>
+    <% end %>
+
+    <p class="auth__alt">already have an account? <%= link_to "sign in", new_session_path %></p>
+  </div>
+</section>

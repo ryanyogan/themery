@@ -1,4 +1,4 @@
-<%= link_to theme_path(theme.name), class: "card", id: dom_id(theme, :card) do %>
+<%= link_to theme_path(theme.name), class: "card", id: dom_id(theme, :card), data: { turbo_frame: "_top" } do %>
   <%= render "themes/visual", version: theme.latest_version, size: :card %>
   <div class="card__meta">
     <span class="card__name"><%= theme.name %></span>

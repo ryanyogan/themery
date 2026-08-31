@@ -1,8 +1,20 @@
-<h1>Forgot your password?</h1>
+<% content_for :title, "Reset password — Themery" %>
 
-<%= tag.div(flash[:alert], style: "color:red") if flash[:alert] %>
+<section class="auth">
+  <div class="auth__card">
+    <p class="hero__eyebrow">it happens</p>
+    <h1 class="auth__title">forgot your password?</h1>
+    <p class="auth__lead">Enter your email and we'll send a reset link.</p>
 
-<%= form_with url: passwords_path do |form| %>
-  <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", value: params[:email_address] %><br>
-  <%= form.submit "Email reset instructions" %>
-<% end %>
+    <%= form_with url: passwords_path, class: "auth__form" do |form| %>
+      <div class="field">
+        <%= form.label :email_address, "email" %>
+        <%= form.email_field :email_address, required: true, autofocus: true,
+              autocomplete: "username", value: params[:email_address] %>
+      </div>
+      <%= form.submit "Email reset instructions", class: "auth__submit" %>
+    <% end %>
+
+    <p class="auth__alt"><%= link_to "back to sign in", new_session_path %></p>
+  </div>
+</section>

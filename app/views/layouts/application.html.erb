@@ -30,11 +30,12 @@
         <span class="bar__prompt">~/themes</span> <span class="bar__caret">❯</span> <strong>themery</strong>
       <% end %>
 
-      <nav class="bar__nav">
+      <nav class="bar__nav" aria-label="Primary">
         <%= link_to "browse", root_path, class: "bar__link #{'is-current' if current_page?(root_path)}" %>
         <%= link_to "guide", guide_path, class: "bar__link #{'is-current' if current_page?(guide_path)}" %>
         <% if authenticated? %>
-          <%= link_to "publish", dashboard_path, class: "bar__link #{'is-current' if current_page?(dashboard_path)}" %>
+          <%= link_to "starred", starred_themes_path, class: "bar__link #{'is-current' if current_page?(starred_themes_path)}" %>
+          <%= link_to "publish", dashboard_path, class: "bar__link #{'is-current' if current_page?(dashboard_path) || request.path.start_with?('/submissions')}" %>
           <% if Current.user.admin? %>
             <%= link_to "queue", admin_root_path, class: "bar__link #{'is-current' if request.path.start_with?('/admin')}" %>
           <% end %>
@@ -46,12 +47,14 @@
           <span class="bar__toggle-dot"></span>
         </button>
         <% if authenticated? %>
-          <%= link_to "★", starred_themes_path, class: "bar__link", title: "Starred themes", "aria-label": "Starred themes" %>
-          <%= link_to Current.user.username, author_path(Current.user.username), class: "bar__link" %>
+          <%= link_to author_path(Current.user.username), class: "bar__user", title: "Your author page" do %>
+            <span class="bar__avatar"><%= Current.user.username.first.upcase %></span>
+            <span class="bar__username"><%= Current.user.username %></span>
+          <% end %>
           <%= button_to "sign out", session_path, method: :delete, class: "bar__button" %>
         <% else %>
           <%= link_to "sign in", new_session_path, class: "bar__link" %>
-          <%= link_to "sign up", new_registration_path, class: "bar__link bar__link--accent" %>
+          <%= link_to "sign up", new_registration_path, class: "bar__cta" %>
         <% end %>
       </div>
     </header>

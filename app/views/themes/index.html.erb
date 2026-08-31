@@ -11,51 +11,59 @@
   </div>
 </section>
 
-<section class="gallery" id="registry" data-controller="hotkey">
+<section class="gallery" id="registry"
+         data-controller="searchbox" data-searchbox-frame-value="catalog">
   <div class="registry">
-    <div class="registry__row registry__row--search">
-      <%= form_with url: themes_path, method: :get, class: "regsearch" do |form| %>
-        <%= form.hidden_field :sort, value: @sort %>
-        <%= form.hidden_field :mode, value: @mode %>
-        <%= form.hidden_field :category, value: @category %>
-        <%= form.hidden_field :mood, value: @mood %>
-        <span class="regsearch__glyph">⌕</span>
-        <%= form.search_field :q, value: @query, placeholder: "search themes…",
-              class: "regsearch__input", "aria-label": "Search themes",
-              data: { hotkey_target: "input" } %>
-        <kbd class="regsearch__kbd">ctrl k</kbd>
-      <% end %>
-      <nav class="pills" aria-label="Sort themes">
-        <% { "stars" => "loved", "installs" => "installed", "new" => "fresh" }.each do |sort, label| %>
-          <%= link_to label, catalog_path(sort:), class: "pill #{'is-active' if @sort == sort}" %>
-        <% end %>
-      </nav>
-      <span class="registry__count"><%= pluralize(@themes.size, "theme") %></span>
-    </div>
+    <form class="registry__row regsearch" data-action="submit->searchbox#submit" role="search">
+      <span class="regsearch__glyph">⌕</span>
+      <input type="search" name="q" value="<%= @query %>" placeholder="search themes…"
+             class="regsearch__input" aria-label="Search themes" autocomplete="off"
+             data-searchbox-target="input" data-action="input->searchbox#search">
+      <kbd class="regsearch__kbd">ctrl k</kbd>
+    </form>
 
-    <div class="registry__row registry__row--filters">
-      <span class="registry__label">filter</span>
-      <nav class="chips" aria-label="Filter by mode">
-        <% %w[light dark].each do |mode| %>
-          <%= link_to mode, catalog_path(mode: @mode == mode ? nil : mode), class: "chip #{'is-active' if @mode == mode}" %>
+    <%= turbo_frame_tag "catalog", data: { turbo_action: "advance" } do %>
+      <div class="registry__row registry__row--filters">
+        <nav class="pills" aria-label="Sort themes">
+          <% { "stars" => "loved", "installs" => "installed", "new" => "fresh" }.each do |sort, label| %>
+            <%= link_to label, catalog_path(sort:), class: "pill #{'is-active' if @sort == sort}" %>
+          <% end %>
+        </nav>
+        <span class="registry__divider"></span>
+        <nav class="chips" aria-label="Filter by mode">
+          <% %w[light dark].each do |mode| %>
+            <%= link_to mode, catalog_path(mode: @mode == mode ? nil : mode), class: "chip #{'is-active' if @mode == mode}" %>
+          <% end %>
+        </nav>
+        <span class="registry__divider"></span>
+        <nav class="chips" aria-label="Filter by palette family">
+          <% PaletteTaxonomy::CATEGORIES.each do |category| %>
+            <%= link_to category, catalog_path(category: @category == category ? nil : category), class: "chip #{'is-active' if @category == category}" %>
+          <% end %>
+        </nav>
+        <span class="registry__divider"></span>
+        <nav class="chips" aria-label="Filter by mood">
+          <% PaletteTaxonomy::MOODS.each do |mood| %>
+            <%= link_to mood, catalog_path(mood: @mood == mood ? nil : mood), class: "chip #{'is-active' if @mood == mood}" %>
+          <% end %>
+        </nav>
+        <span class="registry__count"><%= pluralize(@themes.size, "theme") %></span>
+        <% if @filtered %>
+          <%= link_to "reset", themes_path, class: "registry__reset" %>
         <% end %>
-      </nav>
-      <span class="registry__divider"></span>
-      <nav class="chips" aria-label="Filter by palette family">
-        <% PaletteTaxonomy::CATEGORIES.each do |category| %>
-          <%= link_to category, catalog_path(category: @category == category ? nil : category), class: "chip #{'is-active' if @category == category}" %>
-        <% end %>
-      </nav>
-      <span class="registry__divider"></span>
-      <nav class="chips" aria-label="Filter by mood">
-        <% PaletteTaxonomy::MOODS.each do |mood| %>
-          <%= link_to mood, catalog_path(mood: @mood == mood ? nil : mood), class: "chip #{'is-active' if @mood == mood}" %>
-        <% end %>
-      </nav>
-      <% if @filtered %>
-        <%= link_to "reset", themes_path, class: "registry__reset" %>
+      </div>
+
+      <% if @themes.any? %>
+        <div class="gallery__grid">
+          <%= render partial: "themes/card", collection: @themes, as: :theme %>
+        </div>
+      <% else %>
+        <div class="empty">
+          <p class="empty__glyph">❯ ls<span class="pline__cursor"></span></p>
+          <p><% if @query %>No themes match “<%= @query %>”. Try a shorter name.<% else %>Nothing matches those filters — <%= link_to "reset them", themes_path %>.<% end %></p>
+        </div>
       <% end %>
-    </div>
+    <% end %>
   </div>
 
   <% if @pulse.any? %>
@@ -70,14 +78,4 @@
   <% end %>
 
   <%= turbo_stream_from :catalog %>
-  <% if @themes.any? %>
-    <div class="gallery__grid">
-      <%= render partial: "themes/card", collection: @themes, as: :theme %>
-    </div>
-  <% else %>
-    <div class="empty">
-      <p class="empty__glyph">❯ ls<span class="pline__cursor"></span></p>
-      <p><% if @query %>No themes match “<%= @query %>”. Try a shorter name<%= " or " + link_to("clear the filters", themes_path) if @filtered %>.<% else %>Nothing matches those filters — <%= link_to "reset them", themes_path %>.<% end %></p>
-    </div>
-  <% end %>
 </section>

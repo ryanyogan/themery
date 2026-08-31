@@ -20,11 +20,53 @@
 .bar__prompt { color: var(--t-muted); font-size: 0.8125rem; }
 .bar__caret { color: var(--t-accent); }
 
-.bar__nav { display: flex; gap: 1rem; flex: 1; }
+.bar__nav { display: flex; gap: 0.25rem; flex: 1; justify-content: center; }
 
-.bar__link { text-decoration: none; color: var(--t-ink-dim); padding: 0.25rem 0.125rem; }
-.bar__link.is-current, .bar__link:hover { color: var(--t-ink); }
-.bar__link--accent { color: var(--t-accent); }
+.bar__link {
+  position: relative;
+  text-decoration: none;
+  color: var(--t-ink-dim);
+  padding: 0.375rem 0.75rem;
+  border-radius: var(--radius);
+  font-size: 0.8125rem;
+}
+.bar__link:hover { color: var(--t-ink); background: var(--t-surface); }
+.bar__link.is-current { color: var(--t-ink); }
+.bar__nav .bar__link.is-current::after {
+  content: "";
+  position: absolute;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: -0.4375rem;
+  height: 2px;
+  background: var(--t-accent);
+}
+
+.bar__cta {
+  padding: 0.375rem 0.875rem;
+  border-radius: var(--radius);
+  background: var(--t-accent);
+  color: var(--t-bg);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.bar__cta:hover { color: var(--t-bg); filter: brightness(1.08); }
+
+.bar__user { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; color: var(--t-ink); }
+.bar__user:hover .bar__username { color: var(--t-accent); }
+.bar__avatar {
+  display: grid;
+  place-items: center;
+  width: 1.625rem;
+  height: 1.625rem;
+  border-radius: 50%;
+  background: var(--t-selection);
+  color: var(--t-accent);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.bar__username { font-size: 0.8125rem; }
 
 .bar__end { display: flex; align-items: center; gap: 1rem; }
 
@@ -62,8 +104,10 @@
 }
 
 @media (max-width: 40rem) {
-  .bar { gap: 0.75rem; padding-inline: 0.875rem; }
-  .bar__prompt { display: none; }
+  .bar { gap: 0.5rem; padding-inline: 0.875rem; }
+  .bar__prompt, .bar__username { display: none; }
+  .bar__nav { gap: 0; }
+  .bar__link { padding-inline: 0.5rem; }
   .bar__end { gap: 0.625rem; }
   .bar__link, .bar__button { white-space: nowrap; }
 }

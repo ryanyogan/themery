@@ -45,6 +45,10 @@
 
 /* ---- registry bar ---- */
 .registry { border: 1px solid var(--t-surface-2); margin-bottom: 1.25rem; }
+.registry turbo-frame { display: block; }
+.registry .gallery__grid { padding: 1.25rem; border-top: 1px solid var(--t-surface-2); }
+.registry .empty { border-top: 1px solid var(--t-surface-2); }
+.registry__row--filters { row-gap: 0.5rem; }
 
 .registry__row { display: flex; align-items: center; gap: 1rem; padding: 0.625rem 1rem; flex-wrap: wrap; }
 .registry__row--filters { border-top: 1px solid var(--t-surface-2); row-gap: 0.5rem; }
