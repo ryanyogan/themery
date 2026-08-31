@@ -21,7 +21,12 @@ class Theme < ApplicationRecord
     format: { with: /\A[a-z0-9][a-z0-9_-]*\z/, message: "only letters, numbers, hyphens, and underscores" },
     exclusion: { in: RESERVED_NAMES, message: "is a stock omarchy theme name" }
 
+  has_one :latest_version, -> { approved.order(number: :desc) }, class_name: "Version"
+
   scope :published, -> { joins(:versions).where(versions: { state: "approved" }).distinct }
+  scope :with_latest_version, -> {
+    includes(latest_version: { preview_background_attachment: { blob: { variant_records: { image_attachment: :blob } } } })
+  }
 
   # The stock client derives the install directory from the clone URL
   # (basename, strip omarchy- prefix / -theme suffix, downcase). Because we

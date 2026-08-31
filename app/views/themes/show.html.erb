@@ -1,0 +1,77 @@
+<% content_for :title, "#{@theme.name} — Themery" %>
+
+<article class="theme">
+  <div class="theme__hero">
+    <%= render "themes/preview", version: @version, size: :hero %>
+  </div>
+
+  <div class="theme__rail">
+    <header class="theme__head">
+      <h1 class="theme__name"><%= @theme.name %></h1>
+      <p class="theme__byline">
+        by <%= link_to @theme.author.username, author_path(@theme.author.username) %>
+        · <span class="card__mode card__mode--<%= @theme.mode %>"></span> <%= @theme.mode %>
+        · v<%= @version.number %>
+      </p>
+    </header>
+
+    <div class="theme__counts">
+      <span class="count" id="<%= dom_id(@theme, :stars) %>"><strong>★ <%= @theme.stars_count %></strong> stars</span>
+      <span class="count" id="<%= dom_id(@theme, :installs) %>"><strong>↓ <%= @theme.installs_count %></strong> installs</span>
+      <span class="count"><strong>⟳ <%= @theme.updates_count %></strong> updates</span>
+    </div>
+
+    <div class="install" data-controller="clipboard" data-clipboard-copied-class="is-copied">
+      <p class="install__label">install with the stock client</p>
+      <div class="install__row">
+        <code class="install__cmd" data-clipboard-target="source"><%= install_command(@theme) %></code>
+        <button class="install__copy" data-action="clipboard#copy" title="Copy install command">copy</button>
+      </div>
+    </div>
+
+    <div class="theme__actions">
+      <%= button_to "try it on this site", try_theme_path(@theme.name), class: "action action--try" %>
+    </div>
+
+    <div class="palette">
+      <p class="palette__label">palette</p>
+      <div class="palette__row">
+        <% %w[background foreground accent red orange yellow green cyan blue magenta selection muted].each do |key| %>
+          <% value = @version.colors[key] %>
+          <% if value.to_s.match?(ThemesHelper::HEX) %>
+            <span class="palette__chip" style="--chip: <%= value %>" title="<%= key %> <%= value %>"></span>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+
+    <section class="versions">
+      <p class="versions__label">versions</p>
+      <ol class="versions__list">
+        <% @versions.each do |version| %>
+          <li class="versions__item">
+            <span class="versions__tag">v<%= version.number %></span>
+            <span class="versions__date"><%= version.approved_at&.to_date %></span>
+            <% if version.changelog.present? %>
+              <p class="versions__changelog"><%= version.changelog %></p>
+            <% end %>
+          </li>
+        <% end %>
+      </ol>
+    </section>
+
+    <section class="reviews" id="<%= dom_id(@theme, :reviews) %>">
+      <p class="reviews__label">reviews</p>
+      <% if @reviews.any? %>
+        <% @reviews.each do |review| %>
+          <blockquote class="review">
+            <p class="review__body"><%= review.body %></p>
+            <footer class="review__by">— <%= link_to review.user.username, author_path(review.user.username) %></footer>
+          </blockquote>
+        <% end %>
+      <% else %>
+        <p class="reviews__empty">No reviews yet. Installed it? Say how it wears.</p>
+      <% end %>
+    </section>
+  </div>
+</article>

@@ -1,29 +1,70 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "Themery" %></title>
+    <title><%= content_for(:title) || "Themery — omarchy themes" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="application-name" content="Themery">
-    <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
+    <script>
+      // Apply the stored light/dark choice before first paint.
+      try { const t = localStorage.getItem("themery-scheme"); if (t) document.documentElement.dataset.theme = t; } catch {}
+    </script>
 
     <%= yield :head %>
 
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
-
-    <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/icon.png">
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
   <body>
-    <%= yield %>
+    <% if trying_theme %>
+      <%= tag.style try_it_style(trying_theme.latest_version.colors).html_safe, data: { turbo_permanent: "" }, nonce: content_security_policy_nonce %>
+    <% end %>
+
+    <header class="bar">
+      <%= link_to root_path, class: "bar__mark" do %>
+        <span class="bar__prompt">~/themes</span> <span class="bar__caret">❯</span> <strong>themery</strong>
+      <% end %>
+
+      <nav class="bar__nav">
+        <%= link_to "browse", root_path, class: "bar__link #{'is-current' if current_page?(root_path)}" %>
+      </nav>
+
+      <div class="bar__end">
+        <button class="bar__toggle" data-controller="scheme" data-action="scheme#flip" title="Switch light/dark" aria-label="Switch light/dark">
+          <span class="bar__toggle-dot"></span>
+        </button>
+        <% if authenticated? %>
+          <%= link_to Current.user.username, author_path(Current.user.username), class: "bar__link" %>
+          <%= button_to "sign out", session_path, method: :delete, class: "bar__button" %>
+        <% else %>
+          <%= link_to "sign in", new_session_path, class: "bar__link" %>
+          <%= link_to "sign up", new_registration_path, class: "bar__link bar__link--accent" %>
+        <% end %>
+      </div>
+    </header>
+
+    <% flash.each do |kind, message| %>
+      <p class="flash flash--<%= kind %>"><span class="flash__glyph"><%= kind == "alert" ? "✗" : "✓" %></span> <%= message %></p>
+    <% end %>
+
+    <main class="page">
+      <%= yield %>
+    </main>
+
+    <% if trying_theme %>
+      <div class="trybar">
+        <span class="trybar__label">trying <strong><%= trying_theme.name %></strong> — the whole site is wearing its palette</span>
+        <%= link_to "install it", theme_path(trying_theme.name), class: "trybar__link" %>
+        <%= button_to "exit", stop_trying_path, method: :delete, class: "trybar__exit" %>
+      </div>
+    <% end %>
+
+    <footer class="foot">
+      <p>an independent community marketplace for <a href="https://omarchy.org">omarchy</a> themes · not affiliated with omarchy</p>
+    </footer>
   </body>
 </html>

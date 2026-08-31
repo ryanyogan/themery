@@ -5,7 +5,7 @@ module Publishing
   # caps live in the Pipeline (they need the database and the raw upload);
   # this class judges only the tree.
   class Validation
-    Result = Data.define(:errors, :palette) do
+    Result = Data.define(:errors, :palette, :backgrounds) do
       def ok? = errors.empty?
     end
 
@@ -22,8 +22,8 @@ module Publishing
 
     def check
       palette = check_palette
-      check_backgrounds
-      Result.new(errors: @errors, palette:)
+      backgrounds = check_backgrounds
+      Result.new(errors: @errors, palette:, backgrounds:)
     end
 
     private
@@ -48,6 +48,7 @@ module Publishing
           @errors << "Theme needs at least one real image in backgrounds/ — " \
             "#{candidates.any? ? 'the files there could not be read as images' : 'the directory is missing or empty'}"
         end
+        images.sort
       end
 
       def real_image?(path)

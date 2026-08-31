@@ -45,7 +45,12 @@ module Publishing
         "GIT_ALLOW_PROTOCOL" => "https", "GIT_TERMINAL_PROMPT" => "0",
         "GIT_CONFIG_GLOBAL" => "/dev/null", "GIT_CONFIG_SYSTEM" => "/dev/null"
       }
-      argv = %W[timeout #{TIMEOUT_SECONDS} git clone --quiet --depth 1 --single-branch
+      # followRedirects=false closes the SSRF hole the DNS pre-check can't:
+      # a public host 3xx-ing the clone to an internal address. The pre-check
+      # still matters (it rejects directly-private hosts with a clear error),
+      # but the redirect refusal is the enforcement.
+      argv = %W[timeout #{TIMEOUT_SECONDS} git -c http.followRedirects=false
+                clone --quiet --depth 1 --single-branch
                 --no-recurse-submodules -- #{url} #{dest}]
 
       _stdout, stderr, status = Open3.capture3(env, *argv, unsetenv_others: true)

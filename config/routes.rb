@@ -4,16 +4,19 @@ Rails.application.routes.draw do
   resources :passwords, param: :token
   get "verify_email/:token", to: "email_verifications#show", as: :email_verification
   post "verify_email", to: "email_verifications#create", as: :email_verifications
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+
+  resources :themes, param: :name, only: %i[ index show ] do
+    member do
+      post :try
+    end
+  end
+  delete "try", to: "themes#stop_trying", as: :stop_trying
+
+  get "authors/:username", to: "authors#show", as: :author
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
 
-  # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
-  # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
-  # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
-
-  # Placeholder until the gallery (M3) claims root.
-  root "sessions#new"
+  root "themes#index"
 end

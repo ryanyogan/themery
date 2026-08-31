@@ -35,7 +35,7 @@ module Publishing
         theme = resolve_theme
         return fail! if @errors.any?
 
-        accept!(theme, root, normalization, validation.palette)
+        accept!(theme, root, normalization, validation)
       end
     end
 
@@ -84,7 +84,8 @@ module Publishing
         @submission
       end
 
-      def accept!(theme, root, normalization, palette)
+      def accept!(theme, root, normalization, validation)
+        palette = validation.palette
         ApplicationRecord.transaction do
           theme.save!
           theme.pending_version&.destroy!
@@ -101,6 +102,11 @@ module Publishing
             filename: "#{theme.name}-v#{version.number}.tar.gz",
             content_type: "application/gzip"
           )
+          if (background = validation.backgrounds.first)
+            version.preview_background.attach(
+              io: File.open(background), filename: background.basename.to_s
+            )
+          end
           theme.update!(mode: theme.latest_approved_version&.mode || palette.mode)
           @submission.update!(state: "accepted", theme:, version:, error_report: [])
         end

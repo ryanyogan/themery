@@ -8,6 +8,14 @@ class Version < ApplicationRecord
   # it only enters the Hosted Repo when a human approves.
   has_one_attached :bundle
 
+  # The theme's first background, extracted at pipeline time so previews and
+  # cards never pull multi-megabyte images out of git. Variants are the only
+  # sizes pages ever render.
+  has_one_attached :preview_background do |attachable|
+    attachable.variant :card, resize_to_fill: [ 640, 400 ], preprocessed: true
+    attachable.variant :hero, resize_to_fill: [ 1440, 900 ]
+  end
+
   enum :state, %w[pending approved rejected].index_by(&:itself), default: "pending"
 
   validates :number, presence: true, uniqueness: { scope: :theme_id }

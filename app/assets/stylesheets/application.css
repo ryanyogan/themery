@@ -1,10 +1,100 @@
-/*
- * This is a manifest file that'll be compiled into application.css.
+/* Themery — token layer and base.
  *
- * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
- * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
- * cascading order, meaning styles declared later in the document or manifest will override earlier ones,
- * depending on specificity.
- *
- * Consider organizing styles into separate files for maintainability.
+ * Every color the site wears flows through the --t-* tokens below; Try It
+ * mode overrides this one block with a theme's palette and the whole site
+ * follows. Light mode is derived from sherbet, the omarchy theme this site
+ * grew up next to; dark mode is its plum-side inverse.
  */
+
+:root {
+  --t-bg: #fff8f0;
+  --t-surface: #f7ede2;
+  --t-surface-2: #efe1d3;
+  --t-raised: #fffcf7;
+  --t-ink: #3a2e3c;
+  --t-ink-dim: #4d3f50;
+  --t-muted: #9a8f9c;
+  --t-accent: #e5539b;
+  --t-selection: #ffd9e8;
+  --t-ok: #1f8f3e;
+  --t-warn: #b8780a;
+  --t-err: #d6244f;
+
+  --font-mono: "JetBrains Mono", "JetBrainsMono Nerd Font", ui-monospace, "Cascadia Mono", "SF Mono", monospace;
+  --font-prose: system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --radius: 6px;
+  --radius-lg: 10px;
+  --bar-h: 3rem;
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --t-bg: #1d1620;
+    --t-surface: #251c29;
+    --t-surface-2: #2e2333;
+    --t-raised: #171118;
+    --t-ink: #f2e8ee;
+    --t-ink-dim: #cbbfd0;
+    --t-muted: #8a7c8c;
+    --t-accent: #f06db0;
+    --t-selection: #45304a;
+    --t-ok: #25a84a;
+    --t-warn: #d48c0c;
+    --t-err: #f0305f;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --t-bg: #1d1620;
+  --t-surface: #251c29;
+  --t-surface-2: #2e2333;
+  --t-raised: #171118;
+  --t-ink: #f2e8ee;
+  --t-ink-dim: #cbbfd0;
+  --t-muted: #8a7c8c;
+  --t-accent: #f06db0;
+  --t-selection: #45304a;
+  --t-ok: #25a84a;
+  --t-warn: #d48c0c;
+  --t-err: #f0305f;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--t-bg);
+  color: var(--t-ink);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration-color: var(--t-accent); text-underline-offset: 3px; }
+a:hover { color: var(--t-accent); }
+
+::selection { background: var(--t-selection); }
+
+:focus-visible {
+  outline: 2px solid var(--t-accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+h1, h2, h3 { font-weight: 600; letter-spacing: -0.02em; }
+
+button { font: inherit; color: inherit; cursor: pointer; }
+input { font: inherit; color: inherit; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

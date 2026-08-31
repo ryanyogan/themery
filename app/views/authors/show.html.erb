@@ -1,0 +1,19 @@
+<% content_for :title, "#{@author.username} — Themery" %>
+
+<section class="author">
+  <header class="author__head">
+    <h1 class="author__name">~/<%= @author.username %></h1>
+    <p class="author__meta"><%= pluralize(@themes.size, "published theme") %> · joined <%= @author.created_at.to_date %></p>
+  </header>
+
+  <% if @themes.any? %>
+    <div class="gallery__grid">
+      <%= render partial: "themes/card", collection: @themes, as: :theme %>
+    </div>
+  <% else %>
+    <div class="empty">
+      <p class="empty__glyph">❯ ls<span class="pline__cursor"></span></p>
+      <p>Nothing published yet.</p>
+    </div>
+  <% end %>
+</section>

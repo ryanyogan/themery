@@ -1,0 +1,11 @@
+<%= link_to theme_path(theme.name), class: "card", id: dom_id(theme, :card) do %>
+  <%= render "themes/preview", version: theme.latest_version, size: :card %>
+  <div class="card__meta">
+    <span class="card__name"><%= theme.name %></span>
+    <span class="card__mode card__mode--<%= theme.mode %>" title="<%= theme.mode %> theme"></span>
+    <span class="card__stats">
+      <span title="stars">★ <%= theme.stars_count %></span>
+      <span title="installs">↓ <%= theme.installs_count %></span>
+    </span>
+  </div>
+<% end %>

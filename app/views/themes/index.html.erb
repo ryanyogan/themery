@@ -1,0 +1,36 @@
+<% content_for :title, "Themery — omarchy themes" %>
+
+<section class="gallery">
+  <div class="gallery__toolbar">
+    <nav class="pills" aria-label="Sort themes">
+      <% { "stars" => "loved", "installs" => "installed", "new" => "fresh" }.each do |sort, label| %>
+        <%= link_to label, themes_path(sort:, mode: @mode, q: @query), class: "pill #{'is-active' if @sort == sort}" %>
+      <% end %>
+    </nav>
+
+    <nav class="pills" aria-label="Filter by mode">
+      <%= link_to "all", themes_path(sort: @sort, q: @query), class: "pill #{'is-active' unless @mode}" %>
+      <% %w[light dark].each do |mode| %>
+        <%= link_to mode, themes_path(sort: @sort, mode:, q: @query), class: "pill #{'is-active' if @mode == mode}" %>
+      <% end %>
+    </nav>
+
+    <%= form_with url: themes_path, method: :get, class: "search" do |form| %>
+      <%= form.hidden_field :sort, value: @sort %>
+      <%= form.hidden_field :mode, value: @mode %>
+      <span class="search__prompt">/</span>
+      <%= form.search_field :q, value: @query, placeholder: "search themes…", class: "search__input", "aria-label": "Search themes" %>
+    <% end %>
+  </div>
+
+  <% if @themes.any? %>
+    <div class="gallery__grid">
+      <%= render partial: "themes/card", collection: @themes, as: :theme %>
+    </div>
+  <% else %>
+    <div class="empty">
+      <p class="empty__glyph">❯ ls<span class="pline__cursor"></span></p>
+      <p><% if @query %>No themes match “<%= @query %>”. Try a shorter name.<% else %>No themes here yet — the catalog is warming up.<% end %></p>
+    </div>
+  <% end %>
+</section>
