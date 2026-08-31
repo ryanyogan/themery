@@ -202,7 +202,22 @@
 .install__copy:hover { background: var(--t-selection); }
 .install__copy.is-copied { color: var(--t-ok); }
 
-.theme__actions { margin-block: 1.25rem; }
+.theme__actions { margin-block: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.starbox form { display: contents; }
+.action--star, .action--starred {
+  display: block;
+  width: 100%;
+  padding: 0.625rem 1rem;
+  border: 1px solid var(--t-surface-2);
+  border-radius: var(--radius);
+  background: var(--t-raised);
+  color: var(--t-ink);
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+}
+.action--star:hover { border-color: var(--t-warn); color: var(--t-warn); }
+.action--starred { border-color: var(--t-warn); color: var(--t-warn); background: color-mix(in srgb, var(--t-warn) 10%, transparent); }
 .action--try {
   width: 100%;
   padding: 0.625rem 1rem;
@@ -236,6 +251,48 @@
 .review__body { margin: 0; font-family: var(--font-prose); font-size: 0.875rem; }
 .review__by { margin-top: 0.375rem; font-size: 0.75rem; color: var(--t-muted); }
 .reviews__empty { color: var(--t-muted); font-size: 0.8125rem; }
+
+.reviewform { margin-top: 1rem; }
+.reviewform textarea {
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--t-surface-2);
+  border-radius: var(--radius);
+  background: var(--t-raised);
+  font: inherit;
+  font-family: var(--font-prose);
+}
+.reviewform textarea:focus { outline: none; border-color: var(--t-accent); }
+.reviewform input[type="submit"] {
+  margin-top: 0.5rem;
+  padding: 0.375rem 1.25rem;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--t-accent);
+  color: var(--t-bg);
+  font-weight: 600;
+}
+
+/* ---- homepage pulse ---- */
+.pulse { margin-bottom: 1.25rem; }
+.pulse__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 1.75rem;
+  row-gap: 0.25rem;
+  max-height: 1.6rem;
+  overflow: hidden;
+  font-size: 0.75rem;
+  color: var(--t-muted);
+}
+.pulse__item { display: flex; gap: 0.5ch; align-items: baseline; white-space: nowrap; }
+.pulse__item a { color: var(--t-ink-dim); }
+.pulse__glyph--ok { color: var(--t-ok); }
+.pulse__glyph--star { color: var(--t-warn); }
+.pulse__when { color: var(--t-muted); opacity: 0.75; }
 
 /* ---- author page ---- */
 .author__head { margin-bottom: 1.5rem; }

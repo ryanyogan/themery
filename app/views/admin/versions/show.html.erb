@@ -1,0 +1,64 @@
+<% content_for :title, "Review #{@theme.name} v#{@version.number} — Themery" %>
+
+<section class="review-screen">
+  <header class="dash__head">
+    <h1 class="dash__title"><%= @theme.name %> <span class="versions__tag">v<%= @version.number %></span></h1>
+    <span class="queue__author">by <%= link_to @theme.author.username, author_path(@theme.author.username) %>
+      · <%= @version.number == 1 ? "new theme" : "update to a live theme" %></span>
+  </header>
+
+  <% if @version.changelog.present? %>
+    <p class="review-screen__changelog">author says: “<%= @version.changelog %>”</p>
+  <% end %>
+
+  <div class="review-screen__previews">
+    <% if @previous %>
+      <figure class="review-screen__half">
+        <figcaption>live now (v<%= @previous.number %>)</figcaption>
+        <%= render "themes/preview", version: @previous, size: :card %>
+      </figure>
+    <% end %>
+    <figure class="review-screen__half">
+      <figcaption><%= @previous ? "proposed (v#{@version.number})" : "proposed" %></figcaption>
+      <%= render "themes/preview", version: @version, size: :card %>
+    </figure>
+  </div>
+
+  <div class="review-screen__facts">
+    <% if @version.normalization_ledger.any? %>
+      <div class="review-screen__block">
+        <p class="install__label">normalization ledger (author was told)</p>
+        <ul class="review-screen__filelist">
+          <% @version.normalization_ledger.each do |entry| %>
+            <li><code><%= entry["file"] %></code> <%= entry["action"] %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="review-screen__block">
+      <p class="install__label">files<%= " vs v#{@previous.number}" if @previous %></p>
+      <ul class="review-screen__filelist">
+        <% if @previous %>
+          <% @diff[:added].each do |file| %><li class="diff--added">+ <code><%= file %></code></li><% end %>
+          <% @diff[:changed].each do |file| %><li class="diff--changed">~ <code><%= file %></code></li><% end %>
+          <% @diff[:removed].each do |file| %><li class="diff--removed">− <code><%= file %></code></li><% end %>
+          <% if @diff.values.all?(&:empty?) %><li>no file changes (metadata only)</li><% end %>
+        <% else %>
+          <% @version.manifest.each do |file, bytes| %>
+            <li><code><%= file %></code> <span class="sub__when"><%= number_to_human_size(bytes) %></span></li>
+          <% end %>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+
+  <%= form_with url: approve_admin_version_path(@version), class: "verdict" do |form| %>
+    <%= form.text_field :note, placeholder: "optional note to the author", class: "verdict__note" %>
+    <%= form.submit "Approve — make it installable", class: "verdict__approve" %>
+  <% end %>
+  <%= form_with url: reject_admin_version_path(@version), class: "verdict" do |form| %>
+    <%= form.text_field :note, placeholder: "why (required — rejection should teach)", class: "verdict__note" %>
+    <%= form.submit "Reject", class: "verdict__reject" %>
+  <% end %>
+</section>

@@ -1,0 +1,47 @@
+<% content_for :title, "Approval queue — Themery" %>
+<%= turbo_stream_from :admin_queue %>
+
+<section class="queue">
+  <header class="dash__head">
+    <h1 class="dash__title">~/queue</h1>
+    <span class="queue__count"><%= @pending.size %> waiting</span>
+  </header>
+
+  <% if @pending.any? %>
+    <ol class="queue__list">
+      <% @pending.each do |version| %>
+        <li class="queue__item">
+          <%= link_to admin_version_path(version), class: "queue__link" do %>
+            <span class="queue__name"><%= version.theme.name %> <span class="versions__tag">v<%= version.number %></span></span>
+            <span class="queue__author">by <%= version.theme.author.username %></span>
+            <span class="queue__kind"><%= version.number == 1 ? "new theme" : "update" %></span>
+            <span class="sub__when">waiting <%= time_ago_in_words(version.created_at) %></span>
+          <% end %>
+        </li>
+      <% end %>
+    </ol>
+  <% else %>
+    <div class="empty">
+      <p class="empty__glyph">❯ ls queue<span class="pline__cursor"></span></p>
+      <p>Queue's clear. New submissions appear here the moment they pass the pipeline.</p>
+    </div>
+  <% end %>
+
+  <% if @recent.any? %>
+    <h2 class="dash__subtitle">recent decisions</h2>
+    <ol class="sublist">
+      <% @recent.each do |version| %>
+        <li class="sub">
+          <div class="sub__row">
+            <span class="state state--<%= version.state %>"><%= version.state %></span>
+            <span class="sub__name"><%= version.theme.name %> v<%= version.number %></span>
+            <span class="sub__when"><%= time_ago_in_words(version.updated_at) %> ago</span>
+          </div>
+          <% if version.review_note.present? %>
+            <p class="sub__accepted">note: <%= version.review_note %></p>
+          <% end %>
+        </li>
+      <% end %>
+    </ol>
+  <% end %>
+</section>

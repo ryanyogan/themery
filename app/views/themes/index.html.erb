@@ -1,6 +1,17 @@
 <% content_for :title, "Themery — omarchy themes" %>
 
 <section class="gallery">
+  <% if @pulse.any? %>
+    <%= turbo_stream_from "activity" %>
+    <aside class="pulse" aria-label="Recent activity">
+      <ol class="pulse__list" id="activity_pulse">
+        <% @pulse.each do |item| %>
+          <%= render "activity/item", **item %>
+        <% end %>
+      </ol>
+    </aside>
+  <% end %>
+
   <div class="gallery__toolbar">
     <nav class="pills" aria-label="Sort themes">
       <% { "stars" => "loved", "installs" => "installed", "new" => "fresh" }.each do |sort, label| %>

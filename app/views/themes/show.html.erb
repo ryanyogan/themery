@@ -1,5 +1,7 @@
 <% content_for :title, "#{@theme.name} — Themery" %>
 
+<%= turbo_stream_from @theme %>
+
 <article class="theme">
   <div class="theme__hero">
     <%= render "themes/preview", version: @version, size: :hero %>
@@ -15,11 +17,7 @@
       </p>
     </header>
 
-    <div class="theme__counts">
-      <span class="count" id="<%= dom_id(@theme, :stars) %>"><strong>★ <%= @theme.stars_count %></strong> stars</span>
-      <span class="count" id="<%= dom_id(@theme, :installs) %>"><strong>↓ <%= @theme.installs_count %></strong> installs</span>
-      <span class="count"><strong>⟳ <%= @theme.updates_count %></strong> updates</span>
-    </div>
+    <%= render "themes/counts", theme: @theme %>
 
     <div class="install" data-controller="clipboard" data-clipboard-copied-class="is-copied">
       <p class="install__label">install with the stock client</p>
@@ -30,6 +28,7 @@
     </div>
 
     <div class="theme__actions">
+      <%= render "themes/star_button", theme: @theme %>
       <%= button_to "try it on this site", try_theme_path(@theme.name), class: "action action--try" %>
     </div>
 
@@ -71,6 +70,13 @@
         <% end %>
       <% else %>
         <p class="reviews__empty">No reviews yet. Installed it? Say how it wears.</p>
+      <% end %>
+
+      <% if authenticated? && !@reviews.any? { |review| review.user_id == Current.user.id } %>
+        <%= form_with url: theme_reviews_path(@theme.name), scope: :review, class: "reviewform" do |form| %>
+          <%= form.text_area :body, rows: 3, placeholder: "One review per person — make it count.", required: true, maxlength: 1000 %>
+          <%= form.submit "Post review" %>
+        <% end %>
       <% end %>
     </section>
   </div>

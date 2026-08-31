@@ -106,7 +106,8 @@ module Publishing
             changelog: @submission.changelog,
             colors: palette.colors,
             mode: palette.mode,
-            normalization_ledger: normalization.ledger
+            normalization_ledger: normalization.ledger,
+            manifest: manifest_of(root)
           )
           version.bundle.attach(
             io: StringIO.new(bundle_tree(root)),
@@ -122,6 +123,10 @@ module Publishing
           @submission.update!(state: "accepted", theme:, version:, error_report: [])
         end
         @submission
+      end
+
+      def manifest_of(root)
+        root.find.select(&:file?).to_h { |path| [ path.relative_path_from(root).to_s, path.size ] }
       end
 
       # The normalized tree, preserved verbatim between Approval and publish.

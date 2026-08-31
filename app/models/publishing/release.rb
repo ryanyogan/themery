@@ -36,6 +36,13 @@ module Publishing
     # The dashboard's live state flip: publishing should feel alive.
     def self.notify_author(version)
       Turbo::StreamsChannel.broadcast_refresh_to([ version.theme.author, :dashboard ])
+      return unless version.approved?
+
+      Turbo::StreamsChannel.broadcast_prepend_to(
+        "activity", target: "activity_pulse", partial: "activity/item",
+        locals: { kind: :published, theme_name: version.theme.name,
+                  version_number: version.number, at: version.approved_at }
+      )
     end
 
     def self.release_message(version)

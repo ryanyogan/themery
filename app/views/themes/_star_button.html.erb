@@ -1,0 +1,11 @@
+<div id="<%= dom_id(theme, :star_button) %>" class="starbox">
+  <% if authenticated? %>
+    <% if Current.user.stars.exists?(theme: theme) %>
+      <%= button_to "★ starred", theme_star_path(theme.name), method: :delete, class: "action action--starred" %>
+    <% else %>
+      <%= button_to "☆ star", theme_star_path(theme.name), method: :post, class: "action action--star" %>
+    <% end %>
+  <% else %>
+    <%= link_to "☆ star", new_session_path, class: "action action--star", title: "Sign in to star themes" %>
+  <% end %>
+</div>

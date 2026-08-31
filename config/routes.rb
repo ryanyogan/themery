@@ -9,10 +9,23 @@ Rails.application.routes.draw do
     member do
       post :try
     end
+    resource :star, only: %i[ create destroy ]
+    resources :reviews, only: %i[ create destroy ]
   end
+  get "stars", to: "starred_themes#show", as: :starred_themes
   delete "try", to: "themes#stop_trying", as: :stop_trying
 
   get "authors/:username", to: "authors#show", as: :author
+
+  namespace :admin do
+    root "queue#show"
+    resources :versions, only: :show do
+      member do
+        post :approve
+        post :reject
+      end
+    end
+  end
 
   resource :dashboard, only: :show
   resources :submissions, only: %i[ new create ]

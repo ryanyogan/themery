@@ -1,0 +1,19 @@
+<% content_for :title, "Starred — Themery" %>
+
+<section class="gallery">
+  <header class="author__head">
+    <h1 class="author__name">~/starred</h1>
+    <p class="author__meta"><%= pluralize(@themes.size, "theme") %> you've endorsed</p>
+  </header>
+
+  <% if @themes.any? %>
+    <div class="gallery__grid">
+      <%= render partial: "themes/card", collection: @themes, as: :theme %>
+    </div>
+  <% else %>
+    <div class="empty">
+      <p class="empty__glyph">❯ ls<span class="pline__cursor"></span></p>
+      <p>Nothing starred yet. <%= link_to "Browse the catalog", root_path %> and star what you'd install.</p>
+    </div>
+  <% end %>
+</section>
