@@ -166,6 +166,7 @@
   background: var(--t-surface);
 }
 .showcase__image { width: 100%; height: 100%; object-fit: cover; display: block; }
+.showcase__image[hidden], .showcase__frame [hidden] { display: none; }
 
 /* ---- the uniform theme visual: wallpaper + one mock terminal ---- */
 .visual {
