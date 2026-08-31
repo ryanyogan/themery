@@ -95,11 +95,8 @@ omarchy theme set my-theme</pre>
 
   <section class="guide__step">
     <h2><span class="guide__num">6</span> publish it here</h2>
-    <p><%= link_to "Submit your theme", new_submission_path %> either way:</p>
-    <ul class="guide__list">
-      <li><strong>Upload</strong> a <code>.zip</code> or <code>.tar.gz</code> of the folder (up to 50MB). Zipping the folder itself or its contents both work.</li>
-      <li><strong>Import</strong> an existing public repo by its <code>https://</code> URL — handy if your theme already lives on GitHub. Older themes that predate <code>colors.toml</code> are converted automatically from their <code>alacritty.toml</code>, the same way omarchy itself handles them.</li>
-    </ul>
+    <p>Push your theme folder to any public git repo (GitHub, Codeberg, wherever), then <%= link_to "paste its https:// URL here", new_submission_path %>. Older themes that predate <code>colors.toml</code> are converted automatically from their <code>alacritty.toml</code>, the same way omarchy itself handles them.</p>
+    <p>From then on your repo is the source of truth: <strong>Themery checks it hourly</strong>, and when you push changes the new version flows into review on its own — no re-submitting, ever.</p>
     <p>What happens next, in order:</p>
     <ol class="guide__list">
       <li><strong>Instant checks.</strong> Parseable <code>colors.toml</code>, at least one real background, a safe archive, an available name. Problems come back to your dashboard immediately, in plain words.</li>
