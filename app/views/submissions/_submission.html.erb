@@ -17,10 +17,12 @@
   <% if submission.accepted? && submission.version %>
     <p class="sub__accepted">
       became <strong>v<%= submission.version.number %></strong> —
-      <% case submission.version.state %>
-      <% when "pending" %>waiting for review
-      <% when "approved" %><span class="state--approved-text">approved</span> and installable
-      <% when "rejected" %><span class="state--rejected-text">rejected</span><%= ": #{submission.version.review_note}" if submission.version.review_note.present? %>
+      <% if submission.version.pending? %>
+        waiting for review
+      <% elsif submission.version.approved? %>
+        <span class="state--approved-text">approved</span> and installable
+      <% elsif submission.version.rejected? %>
+        <span class="state--rejected-text">rejected</span><%= ": #{submission.version.review_note}" if submission.version.review_note.present? %>
       <% end %>
     </p>
     <% ledger = submission.version.normalization_ledger %>

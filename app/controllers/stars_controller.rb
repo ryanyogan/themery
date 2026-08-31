@@ -2,7 +2,14 @@ class StarsController < ApplicationController
   before_action :set_theme
 
   def create
-    star = Current.user.stars.create_or_find_by!(theme: @theme)
+    # find-first makes a repeat tap a no-op; the rescue covers the race
+    # where two requests pass the find simultaneously (the unique index and
+    # model validation stop the loser).
+    star = begin
+      Current.user.stars.find_or_create_by!(theme: @theme)
+    rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
+      Current.user.stars.find_by!(theme: @theme)
+    end
     broadcast_counts
     broadcast_pulse(star) if star.previously_new_record?
     respond_with_button

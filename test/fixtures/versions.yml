@@ -1,3 +1,6 @@
+# Palettes here are complete enough for the preview renderer, the palette
+# chips, and Try It mode — every page that paints a theme reads these keys.
+
 aurora_v1:
   theme: aurora
   number: 1
@@ -7,9 +10,24 @@ aurora_v1:
   pack_name: pack-aurora-1
   changelog: First cut.
   colors:
+    mode: dark
     background: "#11121a"
+    dark_background: "#0d0e15"
+    darker_background: "#090a10"
+    lighter_background: "#1c1d29"
     foreground: "#c8d3f5"
+    light_foreground: "#b3bee0"
     cursor: "#c8d3f5"
+    accent: "#82aaff"
+    selection: "#2d3f76"
+    muted: "#7a88cf"
+    red: "#ff757f"
+    orange: "#ff966c"
+    yellow: "#ffc777"
+    green: "#c3e88d"
+    cyan: "#86e1fc"
+    blue: "#82aaff"
+    magenta: "#c099ff"
 
 aurora_v2:
   theme: aurora
@@ -18,9 +36,13 @@ aurora_v2:
   mode: dark
   changelog: Warmer terminal palette.
   colors:
+    mode: dark
     background: "#12131c"
     foreground: "#d0d8f0"
     cursor: "#d0d8f0"
+    accent: "#8fb4ff"
+    green: "#c8ec93"
+    red: "#ff8089"
 
 driftwood_v1:
   theme: driftwood
@@ -28,9 +50,15 @@ driftwood_v1:
   state: pending
   mode: light
   colors:
+    mode: light
     background: "#faf6f0"
     foreground: "#3b352c"
     cursor: "#3b352c"
+    accent: "#a5642e"
+    selection: "#e6ddd0"
+    muted: "#8a8172"
+    green: "#5f7a3a"
+    red: "#a83f3f"
 
 sherbet_v1:
   theme: sherbet
@@ -40,6 +68,18 @@ sherbet_v1:
   mode: light
   pack_name: pack-sherbet-1
   colors:
+    mode: light
     background: "#fff7f2"
+    dark_background: "#f7ece4"
     foreground: "#4a3a3a"
     cursor: "#4a3a3a"
+    accent: "#e2725b"
+    selection: "#ffe0d2"
+    muted: "#9a8578"
+    red: "#d1495b"
+    orange: "#e2725b"
+    yellow: "#e9b44c"
+    green: "#7a9e5c"
+    cyan: "#4fa3a5"
+    blue: "#4f7fa3"
+    magenta: "#a35f9e"
