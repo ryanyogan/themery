@@ -1,8 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
-// The detail-page hero: one frame that shows either a real image (a
-// screenshot or a wallpaper) or the Generated Preview, driven by the clips
-// strip underneath.
+// The detail-page hero: opens on the theme visual; the clips strip swaps in
+// screenshots and wallpapers, and the first thumb brings the visual back.
 export default class extends Controller {
   static targets = ["image", "generated"]
 

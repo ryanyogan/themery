@@ -11,37 +11,36 @@
 
 <article class="theme">
   <div class="theme__hero" data-controller="showcase">
-    <% lead_screenshot = @version.screenshots.first %>
     <div class="showcase__frame">
-      <img class="showcase__image" data-showcase-target="image" alt="<%= @theme.name %> in use"
-           <% if lead_screenshot %>src="<%= url_for(lead_screenshot.variant(:hero)) %>"<% else %>hidden<% end %>>
-      <div class="showcase__generated" data-showcase-target="generated" <%= "hidden" if lead_screenshot %>>
-        <%= render "themes/preview", version: @version, size: :hero %>
+      <img class="showcase__image" data-showcase-target="image" alt="<%= @theme.name %> in use" hidden>
+      <div data-showcase-target="generated">
+        <%= render "themes/visual", version: @version, size: :hero %>
       </div>
     </div>
 
-    <div class="clips" role="group" aria-label="Screenshots and wallpapers">
-      <% @version.screenshots.each_with_index do |screenshot, index| %>
-        <button class="clips__thumb <%= 'is-active' if index.zero? %>"
-                data-action="showcase#show" data-showcase-url-param="<%= url_for(screenshot.variant(:hero)) %>"
-                title="screenshot">
-          <img src="<%= url_for(screenshot.variant(:thumb)) %>" alt="" loading="lazy">
+    <% clips = @version.screenshots.to_a + @version.backgrounds.to_a %>
+    <% if clips.any? %>
+      <div class="clips" role="group" aria-label="Screenshots and wallpapers">
+        <button class="clips__thumb clips__thumb--generated is-active"
+                data-action="showcase#showGenerated" title="theme preview">
+          <%= render "themes/visual", version: @version, size: :card %>
         </button>
-      <% end %>
-
-      <button class="clips__thumb clips__thumb--generated <%= 'is-active' unless lead_screenshot %>"
-              data-action="showcase#showGenerated" title="generated preview">
-        <%= render "themes/preview", version: @version, size: :card %>
-      </button>
-
-      <% @version.backgrounds.each do |background| %>
-        <button class="clips__thumb"
-                data-action="showcase#show" data-showcase-url-param="<%= url_for(background.variant(:hero)) %>"
-                title="wallpaper">
-          <img src="<%= url_for(background.variant(:thumb)) %>" alt="" loading="lazy">
-        </button>
-      <% end %>
-    </div>
+        <% @version.screenshots.each do |image| %>
+          <button class="clips__thumb"
+                  data-action="showcase#show" data-showcase-url-param="<%= url_for(image.variant(:hero)) %>"
+                  title="screenshot">
+            <img src="<%= url_for(image.variant(:thumb)) %>" alt="" loading="lazy">
+          </button>
+        <% end %>
+        <% @version.backgrounds.each do |image| %>
+          <button class="clips__thumb"
+                  data-action="showcase#show" data-showcase-url-param="<%= url_for(image.variant(:hero)) %>"
+                  title="wallpaper">
+            <img src="<%= url_for(image.variant(:thumb)) %>" alt="" loading="lazy">
+          </button>
+        <% end %>
+      </div>
+    <% end %>
   </div>
 
   <div class="theme__rail">

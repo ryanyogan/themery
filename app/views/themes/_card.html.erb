@@ -1,9 +1,5 @@
 <%= link_to theme_path(theme.name), class: "card", id: dom_id(theme, :card) do %>
-  <% if (screenshot = theme.latest_version.screenshots.first) %>
-    <img class="card__shot" src="<%= url_for(screenshot.variant(:card)) %>" alt="<%= theme.name %> desktop screenshot" loading="lazy">
-  <% else %>
-    <%= render "themes/preview", version: theme.latest_version, size: :card %>
-  <% end %>
+  <%= render "themes/visual", version: theme.latest_version, size: :card %>
   <div class="card__meta">
     <span class="card__name"><%= theme.name %></span>
     <span class="card__mode card__mode--<%= theme.mode %>" title="<%= theme.mode %> theme"></span>

@@ -158,7 +158,7 @@
 }
 .install.is-copied .install__hint { color: var(--t-ok); }
 
-/* ---- hero showcase (screenshot | generated preview | wallpapers) ---- */
+/* ---- hero showcase (screenshot | wallpapers) ---- */
 .showcase__frame {
   aspect-ratio: 16 / 10;
   border-radius: var(--radius-lg);
@@ -166,24 +166,66 @@
   background: var(--t-surface);
 }
 .showcase__image { width: 100%; height: 100%; object-fit: cover; display: block; }
-.showcase__generated .preview { border-radius: 0; box-shadow: none; }
 
-.card__shot {
-  display: block;
-  width: 100%;
+/* ---- the uniform theme visual: wallpaper + one mock terminal ---- */
+.visual {
+  container-type: inline-size;
+  position: relative;
   aspect-ratio: 16 / 10;
-  object-fit: cover;
   border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: var(--tv-bg, var(--t-surface));
   box-shadow: 0 4px 16px -8px rgb(0 0 0 / 30%);
   transition: box-shadow 160ms ease;
+  font-family: var(--font-mono);
 }
-.card:hover .card__shot { box-shadow: 0 10px 30px -12px rgb(0 0 0 / 35%); }
+.card:hover .visual { box-shadow: 0 10px 30px -12px rgb(0 0 0 / 35%); }
 
-.clips__thumb--generated { position: relative; }
-.clips__thumb--generated .preview {
-  border-radius: 0;
-  box-shadow: none;
-  pointer-events: none;
+.visual__wallpaper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.visual__term {
+  position: relative;
+  width: 72cqw;
+  padding: 4cqw 4.5cqw;
+  border: max(1.5px, 0.35cqw) solid color-mix(in srgb, var(--tv-accent, #888) 85%, transparent);
+  border-radius: 2cqw;
+  background: color-mix(in srgb, var(--tv-bg, #1e1e2e) 88%, transparent);
+  backdrop-filter: blur(6px);
+  color: var(--tv-fg, #cdd6f4);
+  font-size: 3.1cqw;
+  line-height: 1.7;
+}
+.visual__line { margin: 0; white-space: nowrap; overflow: hidden; }
+.visual__line--muted { color: var(--tv-muted, color-mix(in srgb, var(--tv-fg, #cdd6f4) 55%, transparent)); }
+.visual__prompt { color: var(--tv-accent, #89b4fa); }
+
+.visual__swatches { display: flex; gap: 1.4cqw; padding-block: 1.6cqw; }
+.visual .swatch {
+  width: 4.6cqw;
+  height: 4.6cqw;
+  border-radius: 1cqw;
+  flex: none;
+}
+
+.visual--hero { border-radius: var(--radius-lg); }
+.visual--hero .visual__term { width: 60cqw; font-size: 2.2cqw; padding: 3cqw 3.5cqw; }
+.visual--hero .visual .swatch, .visual--hero .swatch { width: 3.2cqw; height: 3.2cqw; }
+
+.swatch {
+  display: inline-block;
+  background: var(--swatch);
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 15%);
+  border-radius: 50%;
+  width: 0.75rem;
+  height: 0.75rem;
 }
 
 /* ---- wallpaper clips strip ---- */

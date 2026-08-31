@@ -1,14 +1,24 @@
 module ThemesHelper
   HEX = /\A#\h{6}(\h{2})?\z/
 
-  # The palette as CSS custom properties for the preview renderer. Only
-  # hex-shaped values are emitted — colors.toml can legally carry non-CSS
-  # strings (hyprland_active_border), and nothing user-authored may reach a
-  # style attribute unfiltered.
-  def preview_style(colors)
-    colors.filter_map { |key, value|
-      "--p-#{key.tr('_', '-')}: #{value};" if key.match?(/\A[a-z_]+\z/) && value.to_s.match?(HEX)
-    }.join(" ")
+  # The tokens the uniform theme visual needs, as filtered custom
+  # properties: background, foreground, accent, muted. Only hex-shaped
+  # values reach the style attribute.
+  def visual_style(colors)
+    { "bg" => colors["background"], "fg" => colors["foreground"],
+      "accent" => colors["accent"], "muted" => colors["muted"] }
+      .filter_map { |token, value| "--tv-#{token}: #{value};" if value.to_s.match?(HEX) }
+      .join(" ")
+  end
+
+  # The eight terminal colors as swatch spans — the palette strip shown on
+  # cards and fallback panels. Only hex-shaped values are emitted; nothing
+  # user-authored may reach a style attribute unfiltered.
+  def palette_swatches(colors, keys: %w[red orange yellow green cyan blue magenta foreground])
+    safe_join(keys.filter_map { |key|
+      value = colors[key]
+      tag.span(class: "swatch", style: "--swatch: #{value}") if value.to_s.match?(HEX)
+    })
   end
 
   # Try It mode: the site's own token layer, overridden from a theme's
@@ -49,10 +59,5 @@ module ThemesHelper
 
   def clone_url(theme)
     "#{request.base_url}/#{theme.name}.git"
-  end
-
-  def preview_background_url(version, variant)
-    return nil unless version&.preview_background&.attached?
-    url_for(version.preview_background.variant(variant))
   end
 end

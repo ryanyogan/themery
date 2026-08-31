@@ -12,16 +12,14 @@
   <% end %>
 
   <div class="review-screen__previews">
-    <% if @previous %>
+    <% [ [ @previous, @previous && "live now (v#{@previous.number})" ],
+         [ @version, @previous ? "proposed (v#{@version.number})" : "proposed" ] ].each do |version, caption| %>
+      <% next unless version %>
       <figure class="review-screen__half">
-        <figcaption>live now (v<%= @previous.number %>)</figcaption>
-        <%= render "themes/preview", version: @previous, size: :card %>
+        <figcaption><%= caption %></figcaption>
+        <%= render "themes/visual", version:, size: :card %>
       </figure>
     <% end %>
-    <figure class="review-screen__half">
-      <figcaption><%= @previous ? "proposed (v#{@version.number})" : "proposed" %></figcaption>
-      <%= render "themes/preview", version: @version, size: :card %>
-    </figure>
   </div>
 
   <div class="review-screen__facts">

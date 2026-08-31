@@ -1,0 +1,16 @@
+<%# The one visual every theme wears in the catalog: its primary background
+    with a single mock terminal showing the palette in use. Uniform across
+    all themes so the grid compares like-for-like; scales from card to hero
+    via container queries. `version` required; `size` is :card or :hero. %>
+<div class="visual visual--<%= local_assigns.fetch(:size, :card) %>" style="<%= visual_style(version.colors) %>">
+  <% if version.preview_background.attached? %>
+    <img class="visual__wallpaper"
+         src="<%= url_for(version.preview_background.variant(local_assigns.fetch(:size, :card) == :hero ? :hero : :card)) %>"
+         alt="" loading="lazy">
+  <% end %>
+  <div class="visual__term">
+    <p class="visual__line"><span class="visual__prompt">❯</span> omarchy theme install <%= version.theme.name %></p>
+    <div class="visual__swatches"><%= palette_swatches(version.colors) %></div>
+    <p class="visual__line visual__line--muted">● <%= version.mode %> · v<%= version.number %></p>
+  </div>
+</div>
