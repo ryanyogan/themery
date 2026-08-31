@@ -54,6 +54,8 @@
   </div>
 
   <%= form_with url: approve_admin_version_path(@version), class: "verdict" do |form| %>
+    <%= form.select :category, PaletteTaxonomy::CATEGORIES, { selected: @theme.category }, class: "verdict__select", "aria-label": "Palette family" %>
+    <%= form.select :mood, PaletteTaxonomy::MOODS, { selected: @theme.mood }, class: "verdict__select", "aria-label": "Mood" %>
     <%= form.text_field :note, placeholder: "optional note to the author", class: "verdict__note" %>
     <%= form.submit "Approve — make it installable", class: "verdict__approve" %>
   <% end %>

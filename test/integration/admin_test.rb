@@ -251,7 +251,7 @@ class AdminTest < ActionDispatch::IntegrationTest
     get theme_path(theme.name)
 
     assert_response :success
-    assert_select ".install__cmd", "omarchy theme install http://www.example.com/#{theme.name}.git"
+    assert_select ".install__cmd", /omarchy theme install http:\/\/www.example.com\/#{theme.name}.git/
   end
 
   test "approving clears the version out of the queue" do

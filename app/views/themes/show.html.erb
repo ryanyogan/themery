@@ -10,8 +10,21 @@
 <%= turbo_stream_from @theme %>
 
 <article class="theme">
-  <div class="theme__hero">
+  <div class="theme__hero" data-controller="wallpaper">
     <%= render "themes/preview", version: @version, size: :hero %>
+
+    <% if @version.backgrounds.count > 1 %>
+      <div class="clips" role="group" aria-label="Wallpapers this theme ships">
+        <% @version.backgrounds.each_with_index do |background, index| %>
+          <button class="clips__thumb <%= 'is-active' if index.zero? %>"
+                  data-action="wallpaper#swap"
+                  data-wallpaper-url-param="<%= url_for(background.variant(:hero)) %>"
+                  title="wallpaper <%= index + 1 %> of <%= @version.backgrounds.count %>">
+            <img src="<%= url_for(background.variant(:thumb)) %>" alt="" loading="lazy">
+          </button>
+        <% end %>
+      </div>
+    <% end %>
   </div>
 
   <div class="theme__rail">
@@ -22,17 +35,20 @@
         · <span class="card__mode card__mode--<%= @theme.mode %>"></span> <%= @theme.mode %>
         · v<%= @version.number %>
       </p>
+      <p class="theme__taxonomy">
+        <% if @theme.category %><%= link_to @theme.category, themes_path(category: @theme.category), class: "chip" %><% end %>
+        <% if @theme.mood %><%= link_to @theme.mood, themes_path(mood: @theme.mood), class: "chip" %><% end %>
+      </p>
     </header>
 
     <%= render "themes/counts", theme: @theme %>
 
-    <div class="install" data-controller="clipboard" data-clipboard-copied-class="is-copied">
-      <p class="install__label">install with the stock client</p>
-      <div class="install__row">
-        <code class="install__cmd" data-clipboard-target="source"><%= install_command(@theme) %></code>
-        <button class="install__copy" data-action="clipboard#copy" title="Copy install command">copy</button>
-      </div>
-    </div>
+    <button class="install" data-controller="clipboard" data-action="clipboard#copy"
+            data-clipboard-copied-class="is-copied" title="Copy the install command">
+      <span class="install__label">install with the stock client</span>
+      <code class="install__cmd" data-clipboard-target="source"><span class="install__prompt">❯</span> <%= install_command(@theme) %></code>
+      <span class="install__hint" data-clipboard-target="hint">click to copy</span>
+    </button>
 
     <div class="theme__actions">
       <%= render "themes/star_button", theme: @theme %>

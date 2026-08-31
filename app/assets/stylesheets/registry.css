@@ -1,0 +1,185 @@
+/* The registry face of the gallery: hero, search bar, filter rows, chips.
+ * Vocabulary borrowed from omarchy.org and the plugin marketplace —
+ * uppercase letter-spaced eyebrows, boxy arrowed buttons, hairlines —
+ * spoken in Themery's own tokens.
+ */
+
+.hero { padding: 2.5rem 0 3rem; max-width: 46rem; }
+
+.hero__eyebrow {
+  margin: 0 0 0.75rem;
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--t-accent);
+}
+.hero__eyebrow::before { content: "● "; font-size: 0.5rem; vertical-align: 2px; }
+
+.hero__title {
+  margin: 0;
+  font-size: clamp(1.75rem, 5vw, 2.75rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.hero__sub { margin: 0.75rem 0 1.5rem; color: var(--t-ink-dim); max-width: 38rem; }
+
+.hero__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+
+.cta {
+  display: inline-block;
+  padding: 0.5rem 1.125rem;
+  border: 1px solid var(--t-ink);
+  background: none;
+  color: var(--t-ink);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+}
+.cta:hover { background: var(--t-surface); color: var(--t-ink); }
+.cta--accent { background: var(--t-accent); border-color: var(--t-accent); color: var(--t-bg); }
+.cta--accent:hover { background: var(--t-accent); color: var(--t-bg); filter: brightness(1.08); }
+.cta--ghost { border-color: var(--t-surface-2); color: var(--t-ink-dim); }
+
+/* ---- registry bar ---- */
+.registry { border: 1px solid var(--t-surface-2); margin-bottom: 1.25rem; }
+
+.registry__row { display: flex; align-items: center; gap: 1rem; padding: 0.625rem 1rem; flex-wrap: wrap; }
+.registry__row--filters { border-top: 1px solid var(--t-surface-2); row-gap: 0.5rem; }
+
+.regsearch {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  flex: 1;
+  min-width: 14rem;
+}
+.regsearch__glyph { color: var(--t-muted); font-size: 1rem; }
+.regsearch__input {
+  flex: 1;
+  border: none;
+  background: none;
+  outline: none;
+  font-size: 0.875rem;
+  min-width: 8rem;
+}
+.regsearch__input::placeholder { color: var(--t-muted); }
+.regsearch__kbd {
+  padding: 0.125rem 0.5rem;
+  border: 1px solid var(--t-surface-2);
+  border-radius: 3px;
+  background: var(--t-surface);
+  color: var(--t-muted);
+  font-size: 0.6875rem;
+}
+
+.registry__count { color: var(--t-muted); font-size: 0.75rem; white-space: nowrap; }
+.registry__label {
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--t-muted);
+}
+.registry__divider { width: 1px; height: 1rem; background: var(--t-surface-2); }
+.registry__reset {
+  margin-left: auto;
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--t-err);
+  text-decoration: none;
+}
+.registry__reset:hover { text-decoration: underline; }
+
+/* ---- chips (filters + taxonomy) ---- */
+.chips { display: flex; flex-wrap: wrap; gap: 0.375rem; }
+.chip {
+  padding: 0.1875rem 0.625rem;
+  border: 1px solid var(--t-surface-2);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  color: var(--t-ink-dim);
+  text-decoration: none;
+}
+.chip:hover { border-color: var(--t-accent); color: var(--t-accent); }
+.chip.is-active { background: var(--t-accent); border-color: var(--t-accent); color: var(--t-bg); }
+
+.theme__taxonomy { display: flex; gap: 0.375rem; margin: 0.5rem 0 0; }
+
+/* ---- updated badge ---- */
+.card__updated {
+  padding: 0.0625rem 0.4375rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--t-ok) 16%, transparent);
+  color: var(--t-ok);
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ---- install box (whole box copies) ---- */
+.install {
+  display: block;
+  width: 100%;
+  margin-block: 1.25rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--t-surface-2);
+  border-radius: var(--radius);
+  background: var(--t-surface);
+  text-align: left;
+  cursor: copy;
+  transition: border-color 120ms ease;
+}
+.install:hover { border-color: var(--t-accent); }
+.install.is-copied { border-color: var(--t-ok); }
+.install__label {
+  display: block;
+  margin-bottom: 0.375rem;
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--t-muted);
+}
+.install__cmd {
+  display: block;
+  font-size: 0.75rem;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none;
+}
+.install__prompt { color: var(--t-accent); }
+.install__hint {
+  display: block;
+  margin-top: 0.375rem;
+  font-size: 0.6875rem;
+  color: var(--t-muted);
+}
+.install.is-copied .install__hint { color: var(--t-ok); }
+
+/* ---- wallpaper clips strip ---- */
+.clips { display: flex; gap: 0.5rem; margin-top: 0.75rem; overflow-x: auto; padding-bottom: 0.25rem; }
+.clips__thumb {
+  flex: none;
+  width: 5.5rem;
+  aspect-ratio: 16 / 10;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--t-surface);
+}
+.clips__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.clips__thumb.is-active, .clips__thumb:hover { border-color: var(--t-accent); }
+
+/* admin verdict selects */
+.verdict__select {
+  padding: 0.5rem;
+  border: 1px solid var(--t-surface-2);
+  border-radius: var(--radius);
+  background: var(--t-raised);
+  color: var(--t-ink);
+  font: inherit;
+  font-size: 0.8125rem;
+}

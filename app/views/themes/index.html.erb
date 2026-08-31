@@ -1,6 +1,63 @@
 <% content_for :title, "Themery — omarchy themes" %>
 
-<section class="gallery">
+<section class="hero">
+  <p class="hero__eyebrow">community catalog</p>
+  <h1 class="hero__title">dress your desktop</h1>
+  <p class="hero__sub">Community themes for <a href="https://omarchy.org">omarchy</a>. Try one on this whole site, install it with one command, publish yours from a git repo.</p>
+  <div class="hero__actions">
+    <%= link_to "browse themes ↓", "#registry", class: "cta" %>
+    <%= link_to "publish a theme →", new_submission_path, class: "cta cta--accent" %>
+    <%= link_to "read the guide", guide_path, class: "cta cta--ghost" %>
+  </div>
+</section>
+
+<section class="gallery" id="registry" data-controller="hotkey">
+  <div class="registry">
+    <div class="registry__row registry__row--search">
+      <%= form_with url: themes_path, method: :get, class: "regsearch" do |form| %>
+        <%= form.hidden_field :sort, value: @sort %>
+        <%= form.hidden_field :mode, value: @mode %>
+        <%= form.hidden_field :category, value: @category %>
+        <%= form.hidden_field :mood, value: @mood %>
+        <span class="regsearch__glyph">⌕</span>
+        <%= form.search_field :q, value: @query, placeholder: "search themes…",
+              class: "regsearch__input", "aria-label": "Search themes",
+              data: { hotkey_target: "input" } %>
+        <kbd class="regsearch__kbd">ctrl k</kbd>
+      <% end %>
+      <nav class="pills" aria-label="Sort themes">
+        <% { "stars" => "loved", "installs" => "installed", "new" => "fresh" }.each do |sort, label| %>
+          <%= link_to label, catalog_path(sort:), class: "pill #{'is-active' if @sort == sort}" %>
+        <% end %>
+      </nav>
+      <span class="registry__count"><%= pluralize(@themes.size, "theme") %></span>
+    </div>
+
+    <div class="registry__row registry__row--filters">
+      <span class="registry__label">filter</span>
+      <nav class="chips" aria-label="Filter by mode">
+        <% %w[light dark].each do |mode| %>
+          <%= link_to mode, catalog_path(mode: @mode == mode ? nil : mode), class: "chip #{'is-active' if @mode == mode}" %>
+        <% end %>
+      </nav>
+      <span class="registry__divider"></span>
+      <nav class="chips" aria-label="Filter by palette family">
+        <% PaletteTaxonomy::CATEGORIES.each do |category| %>
+          <%= link_to category, catalog_path(category: @category == category ? nil : category), class: "chip #{'is-active' if @category == category}" %>
+        <% end %>
+      </nav>
+      <span class="registry__divider"></span>
+      <nav class="chips" aria-label="Filter by mood">
+        <% PaletteTaxonomy::MOODS.each do |mood| %>
+          <%= link_to mood, catalog_path(mood: @mood == mood ? nil : mood), class: "chip #{'is-active' if @mood == mood}" %>
+        <% end %>
+      </nav>
+      <% if @filtered %>
+        <%= link_to "reset", themes_path, class: "registry__reset" %>
+      <% end %>
+    </div>
+  </div>
+
   <% if @pulse.any? %>
     <%= turbo_stream_from "activity" %>
     <aside class="pulse" aria-label="Recent activity">
@@ -12,28 +69,7 @@
     </aside>
   <% end %>
 
-  <div class="gallery__toolbar">
-    <nav class="pills" aria-label="Sort themes">
-      <% { "stars" => "loved", "installs" => "installed", "new" => "fresh" }.each do |sort, label| %>
-        <%= link_to label, themes_path(sort:, mode: @mode, q: @query), class: "pill #{'is-active' if @sort == sort}" %>
-      <% end %>
-    </nav>
-
-    <nav class="pills" aria-label="Filter by mode">
-      <%= link_to "all", themes_path(sort: @sort, q: @query), class: "pill #{'is-active' unless @mode}" %>
-      <% %w[light dark].each do |mode| %>
-        <%= link_to mode, themes_path(sort: @sort, mode:, q: @query), class: "pill #{'is-active' if @mode == mode}" %>
-      <% end %>
-    </nav>
-
-    <%= form_with url: themes_path, method: :get, class: "search" do |form| %>
-      <%= form.hidden_field :sort, value: @sort %>
-      <%= form.hidden_field :mode, value: @mode %>
-      <span class="search__prompt">/</span>
-      <%= form.search_field :q, value: @query, placeholder: "search themes…", class: "search__input", "aria-label": "Search themes" %>
-    <% end %>
-  </div>
-
+  <%= turbo_stream_from :catalog %>
   <% if @themes.any? %>
     <div class="gallery__grid">
       <%= render partial: "themes/card", collection: @themes, as: :theme %>
@@ -41,7 +77,7 @@
   <% else %>
     <div class="empty">
       <p class="empty__glyph">❯ ls<span class="pline__cursor"></span></p>
-      <p><% if @query %>No themes match “<%= @query %>”. Try a shorter name.<% else %>No themes here yet — the catalog is warming up.<% end %></p>
+      <p><% if @query %>No themes match “<%= @query %>”. Try a shorter name<%= " or " + link_to("clear the filters", themes_path) if @filtered %>.<% else %>Nothing matches those filters — <%= link_to "reset them", themes_path %>.<% end %></p>
     </div>
   <% end %>
 </section>

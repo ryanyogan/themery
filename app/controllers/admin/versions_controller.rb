@@ -9,6 +9,10 @@ module Admin
 
     def approve
       version = Version.pending.find(params[:id])
+      version.theme.update!(
+        category: params[:category].presence_in(PaletteTaxonomy::CATEGORIES) || version.theme.category,
+        mood: params[:mood].presence_in(PaletteTaxonomy::MOODS) || version.theme.mood
+      )
       Publishing::Release.approve(version, note: params[:note].presence)
       redirect_to admin_root_path, notice: "Approved #{version.theme.name} v#{version.number} — it's installable now."
     end

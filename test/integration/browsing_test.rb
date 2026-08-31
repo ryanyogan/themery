@@ -103,7 +103,7 @@ class BrowsingTest < ActionDispatch::IntegrationTest
     get theme_path("aurora")
 
     assert_response :success
-    assert_select ".install__cmd", "omarchy theme install http://www.example.com/aurora.git"
+    assert_select ".install__cmd", /omarchy theme install http:\/\/www.example.com\/aurora.git/
   end
 
   test "the theme page paints the palette it publishes" do

@@ -32,6 +32,12 @@ module ThemesHelper
     ":root, :root[data-theme] {\n#{lines.join("\n")}\n  color-scheme: #{colors['mode'] == 'light' ? 'light' : 'dark'};\n}"
   end
 
+  # Gallery filter links: change one facet, keep the rest.
+  def catalog_path(overrides = {})
+    themes_path({ sort: @sort, mode: @mode, category: @category, mood: @mood, q: @query }
+      .merge(overrides).compact_blank)
+  end
+
   def trying_theme
     return nil unless session[:trying_theme]
     @trying_theme ||= Theme.published.includes(:latest_version).find_by(name: session[:trying_theme])
