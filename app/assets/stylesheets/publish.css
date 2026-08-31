@@ -82,7 +82,7 @@
 .sub__ledger li { margin-block: 0.25rem; font-family: var(--font-prose); }
 
 /* submission form + guide */
-.submitform, .guide { max-width: 44rem; }
+.submitform, .guide { max-width: 44rem; margin-inline: auto; }
 .submitform h1, .guide h1 { font-size: 1.375rem; }
 .submitform__lead, .guide__lead { color: var(--t-ink-dim); font-family: var(--font-prose); }
 .submitform__or { color: var(--t-muted); font-size: 0.75rem; text-align: center; margin-block: 1.25rem; }
