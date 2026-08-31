@@ -26,6 +26,16 @@ class ThemesController < ApplicationController
     @reviews = @theme.reviews.newest_first.includes(:user)
   end
 
+  def og
+    theme = Theme.published.find_by!(name: params[:name])
+    version = theme.versions.approved.where.not(og_card_attachment: { id: nil })
+      .joins(:og_card_attachment).order(:number).last
+    raise ActiveRecord::RecordNotFound unless version
+
+    expires_in 1.hour, public: true
+    send_data version.og_card.download, type: "image/png", disposition: "inline"
+  end
+
   def try
     theme = Theme.published.find_by!(name: params[:name])
     session[:trying_theme] = theme.name

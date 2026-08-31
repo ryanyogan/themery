@@ -16,6 +16,9 @@ class Version < ApplicationRecord
     attachable.variant :hero, resize_to_fill: [ 1440, 900 ]
   end
 
+  # The share card, rendered once at Approval (see Publishing::Release).
+  has_one_attached :og_card
+
   enum :state, %w[pending approved rejected].index_by(&:itself), default: "pending"
 
   validates :number, presence: true, uniqueness: { scope: :theme_id }

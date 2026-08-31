@@ -1,4 +1,11 @@
 <% content_for :title, "#{@theme.name} — Themery" %>
+<% content_for :head do %>
+  <meta property="og:title" content="<%= @theme.name %> — omarchy theme">
+  <meta property="og:description" content="<%= @theme.mode %> theme by <%= @theme.author.username %> · ★ <%= @theme.stars_count %> · <%= @theme.installs_count %> installs. One command to install.">
+  <meta property="og:image" content="<%= og_theme_url(@theme.name) %>">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+<% end %>
 
 <%= turbo_stream_from @theme %>
 

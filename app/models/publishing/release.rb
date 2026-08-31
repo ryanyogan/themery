@@ -21,8 +21,19 @@ module Publishing
         version.update!(state: "approved", approved_at: Time.current, review_note: note, pack_name:)
         version.theme.update!(mode: version.mode)
       end
+      attach_og_card(version)
       notify_author(version)
       version
+    end
+
+    # Best-effort: a failed card render must never block an approval.
+    def self.attach_og_card(version)
+      version.og_card.attach(
+        io: StringIO.new(OgCard.png_for(version)),
+        filename: "#{version.theme.name}-og.png", content_type: "image/png"
+      )
+    rescue OgCard::RenderFailed, Vips::Error, Errno::ENOENT => e
+      Rails.logger.warn("og card skipped for #{version.theme.name}: #{e.message}")
     end
 
     def self.reject(version, note:)

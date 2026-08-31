@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   resources :themes, param: :name, only: %i[ index show ] do
     member do
       post :try
+      get "og", format: false
     end
     resource :star, only: %i[ create destroy ]
     resources :reviews, only: %i[ create destroy ]
