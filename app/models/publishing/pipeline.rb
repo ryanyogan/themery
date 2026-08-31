@@ -73,6 +73,7 @@ module Publishing
       def stage_clone(root)
         result = GitImport.fetch(@submission.source_url, into: root)
         @errors.concat(result.errors)
+        @upstream_commit = result.commit
       end
 
       def resolve_theme
@@ -97,6 +98,18 @@ module Publishing
 
       def accept!(theme, root, normalization, validation)
         palette = validation.palette
+
+        # An upstream sync (or re-import) whose content matches what's
+        # already published is nothing to review — record that and stop,
+        # but still remember the upstream commit so the hourly check quiets.
+        current = theme.persisted? && theme.latest_approved_version
+        if current && current.manifest == manifest_of(root) && current.colors == palette.colors
+          theme.update!(upstream_commit: @upstream_commit) if @submission.git_import? && @upstream_commit
+          @submission.update!(state: "skipped", theme:,
+            error_report: [ "Upstream matches the published version — nothing new to submit" ])
+          return @submission
+        end
+
         ApplicationRecord.transaction do
           theme.save!
           theme.pending_version&.destroy!
@@ -117,6 +130,20 @@ module Publishing
           if (background = validation.backgrounds.first)
             version.preview_background.attach(
               io: File.open(background), filename: background.basename.to_s
+            )
+          end
+          validation.backgrounds.each do |image|
+            version.backgrounds.attach(io: File.open(image), filename: image.basename.to_s)
+          end
+
+          if @submission.git_import?
+            theme.update!(source_url: @submission.source_url, upstream_commit: @upstream_commit)
+          end
+          if theme.category.blank? || theme.mood.blank?
+            taxonomy = PaletteTaxonomy.classify(palette.colors, palette.mode)
+            theme.update!(
+              category: theme.category.presence || taxonomy.category,
+              mood: theme.mood.presence || taxonomy.mood
             )
           end
           theme.update!(mode: theme.latest_approved_version&.mode || palette.mode)

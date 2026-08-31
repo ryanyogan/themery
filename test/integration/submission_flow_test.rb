@@ -17,8 +17,9 @@ class SubmissionFlowTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "form[action=?]", submissions_path do
       assert_select "input[name=?]", "submission[theme_name]"
-      assert_select "input[type=file][name=?]", "submission[archive]"
       assert_select "input[name=?]", "submission[source_url]"
+      # Publishing is git-only: no archive upload in the product.
+      assert_select "input[type=file]", count: 0
     end
   end
 
@@ -30,15 +31,17 @@ class SubmissionFlowTest < ActionDispatch::IntegrationTest
     assert_select "input[name=?][value=?]", "submission[theme_name]", "aurora"
   end
 
-  # --- uploading -----------------------------------------------------------
+  # --- submitting ----------------------------------------------------------
 
-  test "uploading an archive creates an archive_upload submission and queues the pipeline" do
+  test "a repo URL creates a git_import submission and queues the pipeline" do
     sign_in_as @author
 
     assert_difference -> { Submission.count }, 1 do
       assert_enqueued_with job: ProcessSubmissionJob do
         post submissions_path, params: {
-          submission: { theme_name: "tidepool", archive: archive("good-theme.zip"), changelog: "First cut." }
+          submission: { theme_name: "tidepool",
+                        source_url: "https://github.com/rosewood/omarchy-tidepool-theme",
+                        changelog: "First cut." }
         }
       end
     end
@@ -47,43 +50,15 @@ class SubmissionFlowTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to dashboard_path
     assert_match(/Submission received/i, flash[:notice])
-    assert_equal "archive_upload", submission.kind
+    assert_equal "git_import", submission.kind
     assert_equal "tidepool", submission.theme_name
+    assert_equal "https://github.com/rosewood/omarchy-tidepool-theme", submission.source_url
     assert_equal "First cut.", submission.changelog
     assert_equal @author, submission.user
-    assert_predicate submission.archive, :attached?
     assert_predicate submission, :received?
   end
 
-  test "a git URL with no archive creates a git_import submission" do
-    sign_in_as @author
-
-    assert_difference -> { Submission.count }, 1 do
-      post submissions_path, params: {
-        submission: { theme_name: "tidepool", source_url: "https://github.com/rosewood/omarchy-tidepool-theme" }
-      }
-    end
-
-    submission = Submission.last
-
-    assert_redirected_to dashboard_path
-    assert_equal "git_import", submission.kind
-    assert_equal "https://github.com/rosewood/omarchy-tidepool-theme", submission.source_url
-    assert_not_predicate submission.archive, :attached?
-  end
-
-  test "an upload wins over a URL when an author supplies both" do
-    sign_in_as @author
-
-    post submissions_path, params: {
-      submission: { theme_name: "tidepool", source_url: "https://github.com/rosewood/theme",
-                    archive: archive("good-theme.zip") }
-    }
-
-    assert_equal "archive_upload", Submission.last.kind
-  end
-
-  test "neither an archive nor a URL is refused with the form and an error" do
+  test "a submission without a repo URL is refused with the form and an error" do
     sign_in_as @author
 
     assert_no_difference -> { Submission.count } do
@@ -101,7 +76,9 @@ class SubmissionFlowTest < ActionDispatch::IntegrationTest
     sign_in_as @author
 
     assert_no_difference -> { Submission.count } do
-      post submissions_path, params: { submission: { theme_name: "", archive: archive("good-theme.zip") } }
+      post submissions_path, params: {
+        submission: { theme_name: "", source_url: "https://github.com/rosewood/omarchy-tidepool-theme" }
+      }
     end
 
     assert_response :unprocessable_entity
@@ -123,7 +100,7 @@ class SubmissionFlowTest < ActionDispatch::IntegrationTest
     sign_in_as users(:two)
 
     assert_no_difference -> { Submission.count } do
-      post submissions_path, params: { submission: { theme_name: "tidepool", archive: archive("good-theme.zip") } }
+      post submissions_path, params: { submission: { theme_name: "tidepool", source_url: "https://github.com/rosewood/omarchy-tidepool-theme" } }
     end
 
     assert_redirected_to dashboard_path
@@ -145,7 +122,7 @@ class SubmissionFlowTest < ActionDispatch::IntegrationTest
     assert_redirected_to new_session_path
 
     assert_no_difference -> { Submission.count } do
-      post submissions_path, params: { submission: { theme_name: "tidepool", archive: archive("good-theme.zip") } }
+      post submissions_path, params: { submission: { theme_name: "tidepool", source_url: "https://github.com/rosewood/omarchy-tidepool-theme" } }
     end
 
     assert_redirected_to new_session_path
@@ -177,16 +154,10 @@ class SubmissionFlowTest < ActionDispatch::IntegrationTest
     assert_select ".empty", /haven't published anything yet/
   end
 
-  test "the queued pipeline turns the upload into a version that is not installable yet" do
+  test "the pipeline turns a submission into a version that is not installable yet" do
     sign_in_as @author
 
-    perform_enqueued_jobs do
-      post submissions_path, params: {
-        submission: { theme_name: "saltmarsh", archive: archive("denied-files-theme.zip") }
-      }
-    end
-
-    submission = Submission.last
+    submission = pipeline_submission("saltmarsh", "denied-files-theme.zip")
 
     assert_predicate submission, :accepted?
     assert_predicate submission.version, :pending?
@@ -201,11 +172,7 @@ class SubmissionFlowTest < ActionDispatch::IntegrationTest
   test "a failed submission reports its errors on the dashboard" do
     sign_in_as @author
 
-    perform_enqueued_jobs do
-      post submissions_path, params: {
-        submission: { theme_name: "nord", archive: archive("good-theme.zip") }
-      }
-    end
+    pipeline_submission("nord", "good-theme.zip")
 
     get dashboard_path
 
@@ -216,13 +183,7 @@ class SubmissionFlowTest < ActionDispatch::IntegrationTest
   test "an accepted submission reports its version and the normalization ledger" do
     sign_in_as @author
 
-    perform_enqueued_jobs do
-      post submissions_path, params: {
-        submission: { theme_name: "saltmarsh", archive: archive("denied-files-theme.zip") }
-      }
-    end
-
-    submission = Submission.last
+    submission = pipeline_submission("saltmarsh", "denied-files-theme.zip")
 
     assert_predicate submission, :accepted?
     assert_predicate submission.version, :pending?
@@ -241,7 +202,13 @@ class SubmissionFlowTest < ActionDispatch::IntegrationTest
   end
 
   private
-    def archive(name)
-      fixture_file_upload("archives/#{name}", "application/zip")
+    # The product takes git URLs only, but the pipeline's internal archive
+    # path is the deterministic way to materialize a submission in tests —
+    # no network, same Validation/Normalization/verdict.
+    def pipeline_submission(theme_name, archive_name)
+      submission = @author.submissions.create!(kind: "archive_upload", theme_name:)
+      submission.archive.attach(io: file_fixture("archives/#{archive_name}").open, filename: archive_name)
+      Publishing::Pipeline.process(submission)
+      submission.reload
     end
 end

@@ -9,7 +9,9 @@ class Submission < ApplicationRecord
   has_one_attached :archive
 
   enum :kind, %w[archive_upload git_import].index_by(&:itself)
-  enum :state, %w[received failed accepted].index_by(&:itself), default: "received"
+  # skipped: the pipeline found nothing new (an upstream sync whose content
+  # matches the published version) — not a failure, not reviewable work.
+  enum :state, %w[received failed accepted skipped].index_by(&:itself), default: "received"
 
   validates :theme_name, presence: true
   validates :source_url, presence: true, if: :git_import?

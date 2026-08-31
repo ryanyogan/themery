@@ -55,7 +55,7 @@ class ThemesController < ApplicationController
           { kind: :published, theme_name: version.theme.name, version_number: version.number, at: version.approved_at }
         end
       starred = Star.includes(:theme, :user).order(created_at: :desc).limit(4).map do |star|
-        { kind: :starred, theme_name: star.theme.name, username: star.user.username, at: star.created_at }
+        { kind: :starred, theme_name: star.theme.name, username: star.user&.username, at: star.created_at }
       end
       (published + starred).sort_by { |item| item[:at] }.reverse.first(5)
     end

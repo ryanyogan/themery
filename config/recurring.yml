@@ -16,3 +16,6 @@ production:
   recount_fetches:
     class: RecountFetchesJob
     schedule: every 30 seconds
+  sync_upstream_themes:
+    class: SyncUpstreamThemesJob
+    schedule: every hour at minute 40

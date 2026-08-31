@@ -2,6 +2,16 @@
 
 Status: approved in grilling session 2026-08-31. Not yet published to any tracker.
 
+> **Amendments 2026-08-31 (Ryan, post-M7):** publishing is git-repo-only — the
+> browser archive upload is removed from the product (the pipeline keeps the
+> archive path internally for tests/tooling). Themery checks each theme's
+> upstream repo hourly and auto-submits changed versions to the approval queue;
+> the catalog marks freshly-updated themes in realtime. Starring no longer
+> requires an account (anonymous stars keyed on a hashed address). Themes are
+> categorized by palette family and mood, both filterable. Gallery design is a
+> hybrid of omarchy.org and the plugin marketplace registry. Catalog is
+> populated from the curated omarchy.org extras list.
+
 ## Problem Statement
 
 Omarchy users discover themes through a static curated list that links to scattered GitHub repos. There is no way to browse themes visually in one place, no quality or safety gate on what a theme contains, no way to publish a theme without maintaining a GitHub repo, and no feedback loop for authors (no install numbers, no endorsements, no reviews). For theme authors, publishing requires git/GitHub fluency and yields zero insight into whether anyone uses their work.

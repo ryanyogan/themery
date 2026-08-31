@@ -3,6 +3,9 @@
   <div class="card__meta">
     <span class="card__name"><%= theme.name %></span>
     <span class="card__mode card__mode--<%= theme.mode %>" title="<%= theme.mode %> theme"></span>
+    <% if theme.recently_updated? %>
+      <span class="card__updated" title="v<%= theme.latest_version.number %> shipped <%= time_ago_in_words(theme.latest_version.approved_at) %> ago">updated</span>
+    <% end %>
     <span class="card__stats">
       <span title="stars">★ <%= theme.stars_count %></span>
       <span title="installs">↓ <%= theme.installs_count %></span>

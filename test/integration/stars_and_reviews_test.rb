@@ -11,19 +11,34 @@ class StarsAndReviewsTest < ActionDispatch::IntegrationTest
 
   # --- starring ------------------------------------------------------------
 
-  test "starring requires an account" do
-    assert_no_difference -> { Star.count } do
-      post theme_star_path("aurora")
+  test "a visitor can star without an account" do
+    assert_difference -> { Star.count }, 1 do
+      post theme_star_path("aurora"), as: :turbo_stream
     end
 
-    assert_redirected_to new_session_path
+    star = Star.order(:created_at).last
+    assert_nil star.user
+    assert_match(/\Aanon:\h{16}\z/, star.voter_key)
+    assert_equal 2, @theme.reload.stars_count
   end
 
-  test "the star button invites a signed-out visitor to sign in" do
+  test "a visitor's repeat star is a no-op and their unstar removes it" do
+    post theme_star_path("aurora"), as: :turbo_stream
+    assert_no_difference -> { Star.count } do
+      post theme_star_path("aurora"), as: :turbo_stream
+    end
+
+    assert_difference -> { Star.count }, -1 do
+      delete theme_star_path("aurora"), as: :turbo_stream
+    end
+    assert_equal 1, @theme.reload.stars_count
+  end
+
+  test "the star button is a live form for signed-out visitors too" do
     get theme_path("aurora")
 
-    assert_select "##{dom_id(@theme, :star_button)} a[href=?]", new_session_path
-    assert_select "##{dom_id(@theme, :star_button)} form", count: 0
+    assert_select "##{dom_id(@theme, :star_button)} form"
+    assert_select "##{dom_id(@theme, :star_button)} a[href=?]", new_session_path, count: 0
   end
 
   test "starring creates a star and returns the flipped button and the new counts" do
@@ -42,12 +57,6 @@ class StarsAndReviewsTest < ActionDispatch::IntegrationTest
     assert_equal 2, @theme.reload.stars_count
   end
 
-  # A Star is binary, so a repeat press must not double-count. It doesn't —
-  # but the response is currently a 422, not a re-render of the button:
-  # StarsController#create reaches for create_or_find_by!, which only rescues
-  # the unique index, while Star's uniqueness validation raises RecordInvalid
-  # first. The count is the correctness question and it is asserted here; the
-  # status code is reported as a bug.
   test "starring twice never counts twice" do
     sign_in_as @user
 
@@ -165,7 +174,7 @@ class StarsAndReviewsTest < ActionDispatch::IntegrationTest
 
   test "an unpublished theme you starred stays off the starred page" do
     sign_in_as users(:two)
-    users(:two).stars.create!(theme: themes(:driftwood))
+    users(:two).stars.create!(theme: themes(:driftwood), voter_key: "user:#{users(:two).id}")
 
     get starred_themes_path
 

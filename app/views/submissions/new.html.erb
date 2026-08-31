@@ -3,10 +3,11 @@
 <section class="submitform">
   <h1>publish a theme</h1>
   <p class="submitform__lead">
-    Upload an archive or import a git repo. Every submission is checked mechanically
+    Point us at your theme's public repo. Every submission is checked mechanically
     (a parseable <code>colors.toml</code>, at least one real background, nothing unsafe),
-    stripped of anything executable, and then reviewed by a human before it goes live.
-    First time? <%= link_to "Read the guide", guide_path %>.
+    stripped of anything executable, and reviewed by a human before it goes live.
+    After that, Themery watches your repo — push an update and it flows into the
+    review queue on its own. First time? <%= link_to "Read the guide", guide_path %>.
   </p>
 
   <%= form_with model: @submission, url: submissions_path do |form| %>
@@ -27,15 +28,8 @@
     </div>
 
     <div>
-      <%= form.label :archive, "theme archive (.zip or .tar.gz, up to 50MB)" %>
-      <%= form.file_field :archive, accept: ".zip,.tar.gz,.tgz,application/zip,application/gzip" %>
-    </div>
-
-    <p class="submitform__or">— or import from a public repo —</p>
-
-    <div>
-      <%= form.label :source_url, "git URL (https only)" %>
-      <%= form.text_field :source_url, placeholder: "https://github.com/you/your-theme" %>
+      <%= form.label :source_url, "git repository (https, public)" %>
+      <%= form.text_field :source_url, required: true, placeholder: "https://github.com/you/omarchy-tidepool-theme" %>
     </div>
 
     <div>

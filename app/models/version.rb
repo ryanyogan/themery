@@ -16,6 +16,12 @@ class Version < ApplicationRecord
     attachable.variant :hero, resize_to_fill: [ 1440, 900 ]
   end
 
+  # Every background the theme ships, for the detail page's wallpaper strip.
+  has_many_attached :backgrounds do |attachable|
+    attachable.variant :thumb, resize_to_fill: [ 320, 200 ]
+    attachable.variant :hero, resize_to_fill: [ 1440, 900 ]
+  end
+
   # The share card, rendered once at Approval (see Publishing::Release).
   has_one_attached :og_card
 

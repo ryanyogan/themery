@@ -1,14 +1,15 @@
 class StarsController < ApplicationController
+  allow_unauthenticated_access
+  rate_limit to: 60, within: 1.hour, with: -> { head :too_many_requests }
   before_action :set_theme
 
   def create
-    # find-first makes a repeat tap a no-op; the rescue covers the race
-    # where two requests pass the find simultaneously (the unique index and
-    # model validation stop the loser).
     star = begin
-      Current.user.stars.find_or_create_by!(theme: @theme)
+      Star.find_or_create_by!(theme: @theme, voter_key: current_voter_key) do |new_star|
+        new_star.user = Current.user
+      end
     rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
-      Current.user.stars.find_by!(theme: @theme)
+      Star.find_by!(theme: @theme, voter_key: current_voter_key)
     end
     broadcast_counts
     broadcast_pulse(star) if star.previously_new_record?
@@ -16,7 +17,7 @@ class StarsController < ApplicationController
   end
 
   def destroy
-    Current.user.stars.destroy_by(theme: @theme)
+    Star.destroy_by(theme: @theme, voter_key: current_voter_key)
     broadcast_counts
     respond_with_button
   end
@@ -40,7 +41,7 @@ class StarsController < ApplicationController
       Turbo::StreamsChannel.broadcast_prepend_to(
         "activity", target: "activity_pulse", partial: "activity/item",
         locals: { kind: :starred, theme_name: @theme.name,
-                  username: Current.user.username, at: star.created_at }
+                  username: star.user&.username, at: star.created_at }
       )
     end
 

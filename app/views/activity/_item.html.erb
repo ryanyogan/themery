@@ -5,7 +5,7 @@
     <%= link_to theme_name, theme_path(theme_name) %> <%= version_number == 1 ? "joined the catalog" : "shipped v#{version_number}" %>
   <% when :starred %>
     <span class="pulse__glyph pulse__glyph--star">★</span>
-    <%= username %> starred <%= link_to theme_name, theme_path(theme_name) %>
+    <%= username || "someone" %> starred <%= link_to theme_name, theme_path(theme_name) %>
   <% end %>
   <time class="pulse__when"><%= time_ago_in_words(at) %> ago</time>
 </li>

@@ -1,3 +1,9 @@
 two_stars_aurora:
   user: two
   theme: aurora
+  voter_key: user:<%= ActiveRecord::FixtureSet.identify(:two) %>
+
+anon_stars_sherbet:
+  user: null
+  theme: sherbet
+  voter_key: anon:f00dfacecafe0001

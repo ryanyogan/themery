@@ -10,7 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_31_150919) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_31_154635) do
+  create_table "action_mailbox_inbound_emails", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "message_checksum", null: false
+    t.string "message_id", null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index ["message_id", "message_checksum"], name: "index_action_mailbox_inbound_emails_uniqueness", unique: true
+  end
+
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -72,9 +81,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_31_150919) do
     t.datetime "created_at", null: false
     t.integer "theme_id", null: false
     t.datetime "updated_at", null: false
-    t.integer "user_id", null: false
+    t.integer "user_id"
+    t.string "voter_key", null: false
+    t.index ["theme_id", "voter_key"], name: "index_stars_on_theme_id_and_voter_key", unique: true
     t.index ["theme_id"], name: "index_stars_on_theme_id"
-    t.index ["user_id", "theme_id"], name: "index_stars_on_user_id_and_theme_id", unique: true
     t.index ["user_id"], name: "index_stars_on_user_id"
   end
 
@@ -96,14 +106,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_31_150919) do
   end
 
   create_table "themes", force: :cascade do |t|
+    t.string "category"
     t.datetime "created_at", null: false
     t.integer "installs_count", default: 0, null: false
     t.string "mode"
+    t.string "mood"
     t.string "name", null: false
+    t.string "source_url"
     t.integer "stars_count", default: 0, null: false
     t.datetime "updated_at", null: false
     t.integer "updates_count", default: 0, null: false
+    t.string "upstream_commit"
     t.integer "user_id", null: false
+    t.index ["category"], name: "index_themes_on_category"
+    t.index ["mood"], name: "index_themes_on_mood"
     t.index ["name"], name: "index_themes_on_name", unique: true
     t.index ["user_id"], name: "index_themes_on_user_id"
   end

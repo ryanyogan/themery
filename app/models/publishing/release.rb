@@ -49,6 +49,10 @@ module Publishing
       Turbo::StreamsChannel.broadcast_refresh_to([ version.theme.author, :dashboard ])
       return unless version.approved?
 
+      # The catalog morphs too, so "updated" badges and fresh cards appear
+      # without a reload for anyone browsing.
+      Turbo::StreamsChannel.broadcast_refresh_to(:catalog)
+
       Turbo::StreamsChannel.broadcast_prepend_to(
         "activity", target: "activity_pulse", partial: "activity/item",
         locals: { kind: :published, theme_name: version.theme.name,

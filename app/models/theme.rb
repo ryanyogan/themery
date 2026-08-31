@@ -28,6 +28,9 @@ class Theme < ApplicationRecord
 
   has_one :latest_version, -> { approved.order(number: :desc) }, class_name: "Version"
 
+  validates :category, inclusion: { in: PaletteTaxonomy::CATEGORIES }, allow_nil: true
+  validates :mood, inclusion: { in: PaletteTaxonomy::MOODS }, allow_nil: true
+
   scope :published, -> { joins(:versions).where(versions: { state: "approved" }).distinct }
   scope :with_latest_version, -> {
     includes(latest_version: { preview_background_attachment: { blob: { variant_records: { image_attachment: :blob } } } })
@@ -54,4 +57,11 @@ class Theme < ApplicationRecord
   end
 
   def published? = versions.approved.exists?
+
+  # "Updated" in the catalog sense: shipped a fresh version recently, as
+  # opposed to just having joined.
+  def recently_updated?
+    latest_version.present? && latest_version.number > 1 &&
+      latest_version.approved_at.after?(7.days.ago)
+  end
 end
