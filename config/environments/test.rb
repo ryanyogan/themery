@@ -4,6 +4,8 @@
 # and recreated between test runs. Don't rely on the data there!
 
 Rails.application.configure do
+  # Hosted repos land in tmp during tests, never in storage/.
+  config.x.repos_root = Rails.root.join("tmp/test/repos").to_s
   # Settings specified here will take precedence over those in config/application.rb.
 
   # While tests run files are not watched, reloading is not necessary.

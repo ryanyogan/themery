@@ -59,3 +59,7 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
+# Publish pipeline: safe archive extraction and colors.toml parsing
+gem "rubyzip", "~> 2.4"
+gem "toml-rb", "~> 4.0"

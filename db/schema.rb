@@ -10,7 +10,44 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_31_143944) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_31_144909) do
+  create_table "active_storage_attachments", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.bigint "record_id", null: false
+    t.string "record_type", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", force: :cascade do |t|
+    t.bigint "byte_size", null: false
+    t.string "checksum"
+    t.string "content_type"
+    t.datetime "created_at", null: false
+    t.string "filename", null: false
+    t.string "key", null: false
+    t.text "metadata"
+    t.string "service_name", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "active_storage_variant_records", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.string "variation_digest", null: false
+    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "fetch_events", force: :cascade do |t|
+    t.string "client_hash", null: false
+    t.datetime "created_at", null: false
+    t.string "pack_name", null: false
+    t.integer "theme_id", null: false
+    t.index ["theme_id", "created_at"], name: "index_fetch_events_on_theme_id_and_created_at"
+    t.index ["theme_id"], name: "index_fetch_events_on_theme_id"
+  end
+
   create_table "reviews", force: :cascade do |t|
     t.text "body", null: false
     t.datetime "created_at", null: false
@@ -42,6 +79,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_31_143944) do
   end
 
   create_table "submissions", force: :cascade do |t|
+    t.text "changelog"
     t.datetime "created_at", null: false
     t.json "error_report", default: [], null: false
     t.string "kind", null: false
@@ -100,6 +138,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_31_143944) do
     t.index ["theme_id"], name: "index_versions_on_theme_id_pending", unique: true, where: "state = 'pending'"
   end
 
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "fetch_events", "themes"
   add_foreign_key "reviews", "themes"
   add_foreign_key "reviews", "users"
   add_foreign_key "sessions", "users"

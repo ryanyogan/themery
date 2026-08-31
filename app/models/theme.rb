@@ -13,6 +13,7 @@ class Theme < ApplicationRecord
   has_many :submissions, dependent: :nullify
   has_many :stars, dependent: :destroy
   has_many :reviews, dependent: :destroy
+  has_many :fetch_events, dependent: :delete_all
 
   normalizes :name, with: ->(n) { canonicalize_name(n) }
 
@@ -22,13 +23,16 @@ class Theme < ApplicationRecord
 
   scope :published, -> { joins(:versions).where(versions: { state: "approved" }).distinct }
 
-  # The stock client derives the install directory from the clone URL with
-  # exactly this transform (basename, strip omarchy- prefix / -theme suffix,
-  # downcase). Two names that canonicalize identically are the same theme on
-  # the user's disk, so this is the identity under which uniqueness holds.
+  # The stock client derives the install directory from the clone URL
+  # (basename, strip omarchy- prefix / -theme suffix, downcase). Because we
+  # then SERVE the theme under the stored name, the client applies that
+  # transform again on install — so the stored name must be a fixed point of
+  # it, or "omarchy-aurora-theme" would be hosted under a URL the client
+  # re-derives to "aurora" and uniqueness wouldn't hold on the user's disk.
   def self.canonicalize_name(name)
-    name.to_s.strip.delete_suffix(".git")
-      .sub(/\Aomarchy-/, "").sub(/-theme\z/, "").downcase
+    name = name.to_s.strip.downcase.delete_suffix(".git")
+    name = name.sub(/\Aomarchy-/, "").sub(/-theme\z/, "") while name.match?(/\Aomarchy-|-theme\z/)
+    name
   end
 
   def latest_approved_version

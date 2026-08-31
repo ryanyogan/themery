@@ -1,5 +1,12 @@
 class Version < ApplicationRecord
   belongs_to :theme
+  # A replaced pending Version is destroyed; the Submission that produced it
+  # survives (its error report and audit trail outlive the draft).
+  has_many :submissions, dependent: :nullify
+
+  # The normalized theme tree, held here between the pipeline and Approval —
+  # it only enters the Hosted Repo when a human approves.
+  has_one_attached :bundle
 
   enum :state, %w[pending approved rejected].index_by(&:itself), default: "pending"
 

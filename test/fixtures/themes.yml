@@ -1,0 +1,23 @@
+# Names here are already canonical (Theme.canonicalize_name) because fixtures
+# bypass model normalization. None may collide with Theme::RESERVED_NAMES.
+
+# Published: one approved version and one pending update waiting on review.
+aurora:
+  name: aurora
+  author: one
+  mode: dark
+  stars_count: 1
+
+# Unpublished: its only version is still pending, so no git client can reach it.
+driftwood:
+  name: driftwood
+  author: two
+  mode: light
+  stars_count: 0
+
+# Published, no pending work.
+sherbet:
+  name: sherbet
+  author: admin
+  mode: light
+  stars_count: 0

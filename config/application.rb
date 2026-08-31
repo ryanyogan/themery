@@ -14,7 +14,17 @@ module Themery
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
     # Common ones are `templates`, `generators`, or `middleware`, for example.
-    config.autoload_lib(ignore: %w[assets tasks])
+    config.autoload_lib(ignore: %w[assets tasks middleware])
+
+    # Where the bare git repos the stock omarchy client clones live. In
+    # production this must sit on the persistent volume (set REPOS_ROOT).
+    config.x.repos_root = ENV.fetch("REPOS_ROOT") { Rails.root.join("storage/repos").to_s }
+
+    # Git traffic (clone/pull of hosted theme repos) is static-file serving
+    # plus one telemetry write — it skips sessions, cookies, and CSRF by
+    # running ahead of nearly the whole middleware stack.
+    require_relative "../lib/middleware/git_dumb_protocol"
+    config.middleware.insert_after ActionDispatch::Executor, GitDumbProtocol
 
     # Configuration for the application, engines, and railties goes here.
     #

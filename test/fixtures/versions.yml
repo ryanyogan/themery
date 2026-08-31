@@ -1,0 +1,45 @@
+aurora_v1:
+  theme: aurora
+  number: 1
+  state: approved
+  approved_at: <%= 3.days.ago %>
+  mode: dark
+  pack_name: pack-aurora-1
+  changelog: First cut.
+  colors:
+    background: "#11121a"
+    foreground: "#c8d3f5"
+    cursor: "#c8d3f5"
+
+aurora_v2:
+  theme: aurora
+  number: 2
+  state: pending
+  mode: dark
+  changelog: Warmer terminal palette.
+  colors:
+    background: "#12131c"
+    foreground: "#d0d8f0"
+    cursor: "#d0d8f0"
+
+driftwood_v1:
+  theme: driftwood
+  number: 1
+  state: pending
+  mode: light
+  colors:
+    background: "#faf6f0"
+    foreground: "#3b352c"
+    cursor: "#3b352c"
+
+sherbet_v1:
+  theme: sherbet
+  number: 1
+  state: approved
+  approved_at: <%= 1.day.ago %>
+  mode: light
+  pack_name: pack-sherbet-1
+  colors:
+    background: "#fff7f2"
+    foreground: "#4a3a3a"
+    cursor: "#4a3a3a"
