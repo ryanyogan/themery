@@ -36,6 +36,13 @@ module Publishing
 
         result = Publishing::Palette.parse(colors.read)
         @errors << result.error unless result.ok?
+
+        # The manual's second light-mode mechanism: an empty light.mode file
+        # in the theme root wins over luminance guessing (the mode key, when
+        # present, was already authoritative).
+        if result.ok? && @root.join("light.mode").exist? && !%w[light dark].include?(result.colors["mode"])
+          result = Publishing::Palette::Result.new(colors: result.colors, mode: "light", error: nil)
+        end
         result
       end
 

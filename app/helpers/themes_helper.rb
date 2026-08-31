@@ -38,7 +38,7 @@ module ThemesHelper
   end
 
   def install_command(theme)
-    "omarchy-theme-install #{clone_url(theme)}"
+    "omarchy theme install #{clone_url(theme)}"
   end
 
   def clone_url(theme)

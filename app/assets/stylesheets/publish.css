@@ -112,6 +112,32 @@
   color: var(--t-accent);
   font-size: 0.8125rem;
 }
+.guide__tldr {
+  margin-block: 1.5rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--t-selection);
+  border-radius: var(--radius-lg);
+  background: var(--t-surface);
+}
+.guide__tldr p:last-child { margin-bottom: 0; font-family: var(--font-prose); }
+
+.guide__table { border-collapse: collapse; font-size: 0.8125rem; }
+.guide__table td { padding: 0.5rem 0.75rem; border-top: 1px solid var(--t-surface-2); vertical-align: top; }
+.guide__table td:first-child { white-space: nowrap; }
+.guide__table td:last-child { font-family: var(--font-prose); }
+
+.guide__list { font-family: var(--font-prose); padding-left: 1.25rem; }
+.guide__list li { margin-block: 0.5rem; }
+
+kbd {
+  padding: 0.0625rem 0.375rem;
+  border: 1px solid var(--t-surface-2);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  background: var(--t-raised);
+  font-size: 0.75rem;
+}
+
 .guide__tree, .guide__code {
   padding: 0.875rem 1rem;
   background: var(--t-surface);

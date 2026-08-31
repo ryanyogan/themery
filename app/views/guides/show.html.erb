@@ -2,45 +2,115 @@
 
 <article class="guide">
   <h1>create an omarchy theme</h1>
-  <p class="guide__lead">From zero to published without leaving this site. An omarchy theme is colors and images — nothing else.</p>
+  <p class="guide__lead">A theme is a folder with <strong>two things</strong> in it: a color file and a background image. Everything else is optional. This page takes you from empty folder to published, and nothing here requires git or GitHub.</p>
 
-  <section class="guide__step">
-    <h2><span class="guide__num">1</span> make the two things every theme needs</h2>
-    <p>A theme is a folder with a <code>colors.toml</code> and a <code>backgrounds/</code> directory holding at least one image:</p>
+  <div class="guide__tldr">
+    <p class="install__label">the whole job</p>
     <pre class="guide__tree">my-theme/
-├── colors.toml
+├── colors.toml          ← your palette (required)
 └── backgrounds/
-    └── dawn.png</pre>
-  </section>
+    └── anything.png     ← at least one real image (required)</pre>
+    <p>Make that, zip it, <%= link_to "upload it", new_submission_path %>. Done. Read on for the palette reference and the optional extras.</p>
+  </div>
 
   <section class="guide__step">
-    <h2><span class="guide__num">2</span> write colors.toml</h2>
-    <p>Start from this skeleton and swap in your palette. <code>mode</code> tells omarchy (and this site) whether you're a light or dark theme:</p>
-    <pre class="guide__code">mode = "dark"
+    <h2><span class="guide__num">1</span> write colors.toml</h2>
+    <p>One flat file of named colors. omarchy generates configs for your terminal, editor, browser, bar, and lock screen from it — you write the palette once. Copy this and change the values:</p>
+    <pre class="guide__code"># light or dark — tells omarchy (and this site) how to treat you
+mode = "dark"
 
-accent = "#89b4fa"
-selection = "#45475a"
-muted = "#585b70"
+# the three personality colors
+accent = "#89b4fa"     # borders, highlights, the color people remember
+selection = "#45475a"  # selected text background
+muted = "#585b70"      # comments, inactive UI
 
+# surfaces
 background = "#1e1e2e"
-foreground = "#cdd6f4"
+dark_background = "#161622"      # panels a step below the background
+darker_background = "#101019"    # deepest layer
+lighter_background = "#313244"   # raised layer
 
+# text
+foreground = "#cdd6f4"
+dark_foreground = "#6c7086"      # dimmed text
+light_foreground = "#bac2de"
+bright_foreground = "#cdd6f4"
+
+# the terminal's eight
 red = "#f38ba8"
 yellow = "#f9e2af"
+orange = "#f6b6ab"
 green = "#a6e3a1"
 cyan = "#94e2d5"
 blue = "#89b4fa"
-magenta = "#f5c2e7"</pre>
-    <p>That's the minimum that renders well. Any theme installed on your machine (<code>~/.local/share/omarchy/themes/</code>) is a complete worked example.</p>
+magenta = "#f5c2e7"
+brown = "#7b5b55"
+
+# bright variants (used by terminal bold/bright)
+bright_red = "#f38ba8"
+bright_yellow = "#f9e2af"
+bright_green = "#a6e3a1"
+bright_cyan = "#94e2d5"
+bright_blue = "#89b4fa"
+bright_magenta = "#f5c2e7"</pre>
+    <p>You don't have to define every key — anything missing falls back sensibly (no <code>orange</code>? yours borrows from <code>yellow</code>). <code>background</code> and <code>foreground</code> are the only two that must exist.</p>
+    <p>Making a light theme? Either set <code>mode = "light"</code> as above, or drop an empty file named <code>light.mode</code> in the theme root — omarchy accepts both, so we do too.</p>
   </section>
 
   <section class="guide__step">
-    <h2><span class="guide__num">3</span> zip it and upload</h2>
-    <p><%= link_to "Submit it here", new_submission_path %> — you'll get instant feedback if anything's off (missing colors, unreadable images, unsafe archive). Files omarchy refuses to install, like <code>neovim.lua</code> or terminal configs, are stripped automatically and you'll see exactly what was removed and why.</p>
+    <h2><span class="guide__num">2</span> add backgrounds</h2>
+    <p>Put one or more images in <code>backgrounds/</code> — PNG, JPEG, or WebP. omarchy cycles through them; the first one (alphabetically) becomes your theme's preview and share card here, so lead with your best.</p>
   </section>
 
   <section class="guide__step">
-    <h2><span class="guide__num">4</span> a human takes one look</h2>
-    <p>Review is editorial only — is it a real theme with an honest name — because safety was already handled mechanically. Once approved, your theme is installable with one command and you'll see install counts, stars, and reviews on <%= link_to "your dashboard", dashboard_path %>.</p>
+    <h2><span class="guide__num">3</span> try it on your own machine</h2>
+    <p>Before publishing, wear it yourself:</p>
+    <pre class="guide__code">cp -r my-theme ~/.config/omarchy/themes/my-theme
+omarchy theme set my-theme</pre>
+    <p>Tip: the <strong>Aether</strong> app (<kbd>Super</kbd>+<kbd>Alt</kbd>+<kbd>Space</kbd> → apps menu) is a GUI for experimenting with palettes and finding backgrounds. The stock themes in <code>/usr/share/omarchy/themes</code> are complete worked examples worth stealing from.</p>
+  </section>
+
+  <section class="guide__step">
+    <h2><span class="guide__num">4</span> optional extras</h2>
+    <p>All of these ship fine through Themery if you include them:</p>
+    <table class="guide__table">
+      <tr><td><code>icons.theme</code></td><td>an icon set name on one line — any Yaru variant: <code>Yaru</code>, <code>Yaru-blue</code>, <code>Yaru-dark</code>, <code>Yaru-magenta</code>, <code>Yaru-olive</code>, <code>Yaru-prussiangreen</code>, <code>Yaru-purple</code>, <code>Yaru-red</code>, <code>Yaru-sage</code>, <code>Yaru-wartybrown</code>, <code>Yaru-yellow</code></td></tr>
+      <tr><td><code>btop.theme</code></td><td>a hand-tuned btop theme, if the generated one isn't enough</td></tr>
+      <tr><td><code>chromium.theme</code></td><td>same idea for Chromium</td></tr>
+      <tr><td><code>helix.toml</code></td><td>same idea for Helix</td></tr>
+      <tr><td><code>shell.toml</code></td><td>same idea for the omarchy shell</td></tr>
+      <tr><td><code>unlock.png</code> + <code>preview-unlock.png</code></td><td>a custom lock-screen mark (transparent PNG works best; generate the preview with <code>omarchy plymouth preview</code>)</td></tr>
+    </table>
+  </section>
+
+  <section class="guide__step">
+    <h2><span class="guide__num">5</span> name it</h2>
+    <p>Lowercase; start with a letter, number, or underscore; then letters, numbers, <code>.</code> <code>_</code> <code>+</code> <code>-</code>. So <code>sunset</code>, <code>flexoki_light</code>, and even <code>c++</code> are all fine.</p>
+    <p>Two things to know:</p>
+    <ul class="guide__list">
+      <li><code>omarchy-sunset-theme</code> and <code>sunset</code> are <strong>the same name</strong> — the installer strips the decoration, and so do we. Pick either style.</li>
+      <li>The 22 stock theme names (<code>nord</code>, <code>gruvbox</code>, <code>tokyo-night</code>, …) are reserved. A marketplace theme with a stock name would silently merge into the stock theme on people's machines, so we refuse them at upload.</li>
+    </ul>
+  </section>
+
+  <section class="guide__step">
+    <h2><span class="guide__num">6</span> publish it here</h2>
+    <p><%= link_to "Submit your theme", new_submission_path %> either way:</p>
+    <ul class="guide__list">
+      <li><strong>Upload</strong> a <code>.zip</code> or <code>.tar.gz</code> of the folder (up to 50MB). Zipping the folder itself or its contents both work.</li>
+      <li><strong>Import</strong> an existing public repo by its <code>https://</code> URL — handy if your theme already lives on GitHub. Older themes that predate <code>colors.toml</code> are converted automatically from their <code>alacritty.toml</code>, the same way omarchy itself handles them.</li>
+    </ul>
+    <p>What happens next, in order:</p>
+    <ol class="guide__list">
+      <li><strong>Instant checks.</strong> Parseable <code>colors.toml</code>, at least one real background, a safe archive, an available name. Problems come back to your dashboard immediately, in plain words.</li>
+      <li><strong>The strip.</strong> Files that carry code — <code>*.lua</code>, <code>alacritty.toml</code>, <code>foot.ini</code>, <code>ghostty.conf</code>, <code>kitty.conf</code>, <code>vscode.json</code> — are removed. This isn't a judgment call: omarchy refuses to install them from any downloaded theme and regenerates them locally from your <code>colors.toml</code>, so shipping them does nothing but sit on disk. Your dashboard shows exactly what was removed and why, every time.</li>
+      <li><strong>A human look.</strong> Review is editorial only — is it a real theme with an honest name — because safety was already handled above. You'll see the verdict flip live on <%= link_to "your dashboard", dashboard_path %>.</li>
+      <li><strong>Live.</strong> Your theme gets a page, a generated preview, a one-line install command, and real install counts measured from actual installs. New versions go through the same pipeline; people who installed your theme receive them via omarchy's normal update.</li>
+    </ol>
+  </section>
+
+  <section class="guide__step">
+    <h2><span class="guide__num">?</span> why did my neovim.lua disappear</h2>
+    <p>The stock vendored themes ship one, so this surprises people: any <code>.lua</code> file is executable code, and <code>omarchy theme install</code> won't stage it from a downloaded theme — yours included. omarchy generates the Neovim colors from your <code>colors.toml</code> instead. Nothing is lost; the strip just makes visible what the installer was already going to do.</p>
   </section>
 </article>

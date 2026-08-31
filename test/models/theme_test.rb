@@ -98,14 +98,15 @@ class ThemeTest < ActiveSupport::TestCase
     assert_not Theme.new(author: @author, name: "sea glass").valid?
   end
 
-  test "a name may not start with a hyphen or underscore" do
+  # Charset per the omarchy manual: start with letter/digit/underscore, then
+  # letters, digits, ., _, +, - — so "flexoki_light" and "c++" are legal.
+  test "a name follows the client's directory-name rules" do
     assert_not Theme.new(author: @author, name: "-seaglass").valid?
-    assert_not Theme.new(author: @author, name: "_seaglass").valid?
-  end
-
-  test "a name may not contain path separators or dots" do
     assert_not Theme.new(author: @author, name: "sea/glass").valid?
-    assert_not Theme.new(author: @author, name: "sea.glass").valid?
+    assert_not Theme.new(author: @author, name: ".seaglass").valid?
+    assert Theme.new(author: @author, name: "_seaglass").valid?
+    assert Theme.new(author: @author, name: "sea.glass").valid?
+    assert Theme.new(author: @author, name: "c++").valid?
   end
 
   test "a name may not be blank" do

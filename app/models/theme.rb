@@ -17,8 +17,13 @@ class Theme < ApplicationRecord
 
   normalizes :name, with: ->(n) { canonicalize_name(n) }
 
+  # The client's own rules for an installable directory name: starts with a
+  # letter, digit, or underscore; then letters, digits, ., _, +, - (so
+  # "c++" and "flexoki_light" are legal names, per the omarchy manual).
+  NAME_FORMAT = /\A[a-z0-9_][a-z0-9._+-]*\z/
+
   validates :name, presence: true, uniqueness: true, length: { maximum: 50 },
-    format: { with: /\A[a-z0-9][a-z0-9_-]*\z/, message: "only letters, numbers, hyphens, and underscores" },
+    format: { with: NAME_FORMAT, message: "must start with a letter, number, or underscore and use only letters, numbers, ., _, +, -" },
     exclusion: { in: RESERVED_NAMES, message: "is a stock omarchy theme name" }
 
   has_one :latest_version, -> { approved.order(number: :desc) }, class_name: "Version"

@@ -17,7 +17,8 @@
 # so pack fetches are recorded raw here and classified at recount time.
 # The alternates paths MUST 404 — a 200 would redirect git's object lookup.
 class GitDumbProtocol
-  REPO_PATH = %r{\A/([a-z0-9][a-z0-9_-]*)\.git(/.*)\z}
+  # Name charset mirrors Theme::NAME_FORMAT (the client's directory rules).
+  REPO_PATH = %r{\A/([a-z0-9_][a-z0-9._+-]*)\.git(/.*)\z}
   SERVABLE = %r{\A/(
     HEAD |
     info/refs |
