@@ -135,6 +135,9 @@ module Publishing
           validation.backgrounds.each do |image|
             version.backgrounds.attach(io: File.open(image), filename: image.basename.to_s)
           end
+          validation.screenshots.each do |image|
+            version.screenshots.attach(io: File.open(image), filename: image.basename.to_s)
+          end
 
           if @submission.git_import?
             theme.update!(source_url: @submission.source_url, upstream_commit: @upstream_commit)

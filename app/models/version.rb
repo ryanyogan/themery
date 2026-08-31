@@ -22,6 +22,15 @@ class Version < ApplicationRecord
     attachable.variant :hero, resize_to_fill: [ 1440, 900 ]
   end
 
+  # The theme's own preview.png screenshots (the spec's Screenshot
+  # primitive): real desktop captures the author vendors in the repo.
+  # When present, these lead — the Generated Preview becomes the fallback.
+  has_many_attached :screenshots do |attachable|
+    attachable.variant :card, resize_to_fill: [ 640, 400 ], preprocessed: true
+    attachable.variant :thumb, resize_to_fill: [ 320, 200 ]
+    attachable.variant :hero, resize_to_limit: [ 1600, 1000 ]
+  end
+
   # The share card, rendered once at Approval (see Publishing::Release).
   has_one_attached :og_card
 

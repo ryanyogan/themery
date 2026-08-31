@@ -5,7 +5,7 @@ module Publishing
   # caps live in the Pipeline (they need the database and the raw upload);
   # this class judges only the tree.
   class Validation
-    Result = Data.define(:errors, :palette, :backgrounds) do
+    Result = Data.define(:errors, :palette, :backgrounds, :screenshots) do
       def ok? = errors.empty?
     end
 
@@ -23,7 +23,7 @@ module Publishing
     def check
       palette = check_palette
       backgrounds = check_backgrounds
-      Result.new(errors: @errors, palette:, backgrounds:)
+      Result.new(errors: @errors, palette:, backgrounds:, screenshots: find_screenshots)
     end
 
     private
@@ -56,6 +56,17 @@ module Publishing
             "#{candidates.any? ? 'the files there could not be read as images' : 'the directory is missing or empty'}"
         end
         images.sort
+      end
+
+      # The theme's vendored preview screenshots: preview.png and friends
+      # (preview-unlock.png, preview-2.png…) at the theme root, the plain
+      # preview first. Optional — never a validation error.
+      def find_screenshots
+        candidates = @root.children.select do |path|
+          path.file? && path.basename.to_s.match?(/\Apreview.*\.(png|jpe?g|webp)\z/i)
+        end
+        candidates.select { |path| real_image?(path) }
+          .sort_by { |path| [ path.basename.to_s.match?(/\Apreview\.\w+\z/i) ? 0 : 1, path.basename.to_s ] }
       end
 
       def real_image?(path)

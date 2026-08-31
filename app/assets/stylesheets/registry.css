@@ -158,6 +158,34 @@
 }
 .install.is-copied .install__hint { color: var(--t-ok); }
 
+/* ---- hero showcase (screenshot | generated preview | wallpapers) ---- */
+.showcase__frame {
+  aspect-ratio: 16 / 10;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--t-surface);
+}
+.showcase__image { width: 100%; height: 100%; object-fit: cover; display: block; }
+.showcase__generated .preview { border-radius: 0; box-shadow: none; }
+
+.card__shot {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 16px -8px rgb(0 0 0 / 30%);
+  transition: box-shadow 160ms ease;
+}
+.card:hover .card__shot { box-shadow: 0 10px 30px -12px rgb(0 0 0 / 35%); }
+
+.clips__thumb--generated { position: relative; }
+.clips__thumb--generated .preview {
+  border-radius: 0;
+  box-shadow: none;
+  pointer-events: none;
+}
+
 /* ---- wallpaper clips strip ---- */
 .clips { display: flex; gap: 0.5rem; margin-top: 0.75rem; overflow-x: auto; padding-bottom: 0.25rem; }
 .clips__thumb {

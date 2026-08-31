@@ -33,7 +33,10 @@ class Theme < ApplicationRecord
 
   scope :published, -> { joins(:versions).where(versions: { state: "approved" }).distinct }
   scope :with_latest_version, -> {
-    includes(latest_version: { preview_background_attachment: { blob: { variant_records: { image_attachment: :blob } } } })
+    includes(latest_version: [
+      { preview_background_attachment: { blob: { variant_records: { image_attachment: :blob } } } },
+      { screenshots_attachments: { blob: { variant_records: { image_attachment: :blob } } } }
+    ])
   }
 
   # The stock client derives the install directory from the clone URL

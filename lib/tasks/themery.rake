@@ -34,6 +34,24 @@ namespace :themery do
     puts "catalog now holds #{Theme.published.count} themes"
   end
 
+  desc "Attach vendored preview screenshots to versions imported before screenshot harvesting existed"
+  task backfill_screenshots: :environment do
+    Version.joins(:bundle_attachment).find_each do |version|
+      next if version.screenshots.attached?
+
+      Dir.mktmpdir do |workspace|
+        root = Pathname(workspace)
+        Publishing::Release.unpack(version.bundle, root)
+        previews = root.children.select do |path|
+          path.file? && path.basename.to_s.match?(/\Apreview.*\.(png|jpe?g|webp)\z/i)
+        end
+        previews.sort_by { |p| [ p.basename.to_s.match?(/\Apreview\.\w+\z/i) ? 0 : 1, p.basename.to_s ] }
+          .each { |image| version.screenshots.attach(io: File.open(image), filename: image.basename.to_s) }
+        puts "#{version.theme.name} v#{version.number}: #{previews.size} screenshot(s)"
+      end
+    end
+  end
+
   def import_author(creator)
     handle = creator.to_s.downcase.gsub(/[^a-z0-9-]+/, "-").gsub(/\A-+|-+\z/, "")
     handle = "community" if handle.blank?
