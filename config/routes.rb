@@ -14,6 +14,7 @@ Rails.application.routes.draw do
     resources :reviews, only: %i[ create destroy ]
   end
   get "stars", to: "starred_themes#show", as: :starred_themes
+  get "explore", to: "explores#show", as: :explore
   delete "try", to: "themes#stop_trying", as: :stop_trying
 
   get "authors/:username", to: "authors#show", as: :author

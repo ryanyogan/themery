@@ -1,0 +1,85 @@
+<% content_for :title, "Explore — Themery" %>
+
+<section class="hero hero--compact">
+  <p class="hero__eyebrow">explore</p>
+  <h1 class="hero__title">find your next look</h1>
+  <p class="hero__sub">The catalog, cut a few useful ways. Everything links back to <%= link_to "browse", root_path %> for the full grid.</p>
+</section>
+
+<section class="xsec">
+  <header class="xsec__head">
+    <h2 class="xsec__title">most installed</h2>
+    <p class="xsec__sub">measured from real <code>git clone</code> traffic, not clicks</p>
+    <%= link_to "browse by installs →", themes_path(sort: "installs"), class: "xsec__more" %>
+  </header>
+  <div class="xsec__row">
+    <% @most_installed.each_with_index do |theme, index| %>
+      <div class="ranked">
+        <span class="ranked__n"><%= index + 1 %></span>
+        <%= render "themes/card", theme: %>
+      </div>
+    <% end %>
+  </div>
+</section>
+
+<section class="xsec">
+  <header class="xsec__head">
+    <h2 class="xsec__title">new arrivals</h2>
+    <p class="xsec__sub">freshly approved into the catalog</p>
+    <%= link_to "browse by freshness →", themes_path(sort: "new"), class: "xsec__more" %>
+  </header>
+  <div class="xsec__row">
+    <%= render partial: "themes/card", collection: @newest, as: :theme %>
+  </div>
+</section>
+
+<section class="xsec">
+  <header class="xsec__head">
+    <h2 class="xsec__title">active maintainers</h2>
+    <p class="xsec__sub">authors who shipped approved versions in the last 90 days</p>
+  </header>
+  <div class="xsec__maintainers">
+    <% @maintainers.each do |user, shipped| %>
+      <%= link_to author_path(user.username), class: "maintainer" do %>
+        <span class="bar__avatar maintainer__avatar"><%= user.username.first.upcase %></span>
+        <span class="maintainer__body">
+          <span class="maintainer__name"><%= user.username %></span>
+          <span class="maintainer__stats"><%= pluralize(shipped, "release") %> · <%= pluralize(user.themes.size, "theme") %></span>
+        </span>
+        <span class="maintainer__strip">
+          <% user.themes.filter_map(&:latest_version).first(4).each do |version| %>
+            <% if version.colors["accent"].to_s.match?(ThemesHelper::HEX) %>
+              <span class="swatch" style="--swatch: <%= version.colors["accent"] %>"></span>
+            <% end %>
+          <% end %>
+        </span>
+      <% end %>
+    <% end %>
+  </div>
+</section>
+
+<section class="xsec">
+  <header class="xsec__head">
+    <h2 class="xsec__title">by build</h2>
+    <p class="xsec__sub">how much a theme ships, straight from its files</p>
+  </header>
+  <div class="xsec__builds">
+    <% {
+      "standard" => "the essentials — a palette and its wallpapers",
+      "rounded" => "a rounded-out package — extra wallpapers, previews, or one hand-tuned app config",
+      "custom" => "deep cuts — two or more hand-tuned extras: btop, shell, custom CSS, lock-screen art"
+    }.each do |kind, blurb| %>
+      <div class="buildseg">
+        <header class="buildseg__head">
+          <h3 class="buildseg__name"><%= kind %></h3>
+          <span class="buildseg__count"><%= pluralize(@builds[kind][:count], "theme") %></span>
+        </header>
+        <p class="buildseg__blurb"><%= blurb %></p>
+        <div class="buildseg__samples">
+          <%= render partial: "themes/card", collection: @builds[kind][:themes], as: :theme %>
+        </div>
+        <%= link_to "browse #{kind} →", themes_path(build: kind), class: "xsec__more" %>
+      </div>
+    <% end %>
+  </div>
+</section>

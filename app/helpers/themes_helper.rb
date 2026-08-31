@@ -44,7 +44,7 @@ module ThemesHelper
 
   # Gallery filter links: change one facet, keep the rest.
   def catalog_path(overrides = {})
-    themes_path({ sort: @sort, mode: @mode, category: @category, mood: @mood, q: @query }
+    themes_path({ sort: @sort, mode: @mode, category: @category, mood: @mood, build: @build, q: @query }
       .merge(overrides).compact_blank)
   end
 

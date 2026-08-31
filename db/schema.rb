@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_31_154635) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_31_165341) do
   create_table "action_mailbox_inbound_emails", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "message_checksum", null: false
@@ -106,6 +106,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_31_154635) do
   end
 
   create_table "themes", force: :cascade do |t|
+    t.string "build_kind"
     t.string "category"
     t.datetime "created_at", null: false
     t.integer "installs_count", default: 0, null: false
@@ -118,6 +119,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_31_154635) do
     t.integer "updates_count", default: 0, null: false
     t.string "upstream_commit"
     t.integer "user_id", null: false
+    t.index ["build_kind"], name: "index_themes_on_build_kind"
     t.index ["category"], name: "index_themes_on_category"
     t.index ["mood"], name: "index_themes_on_mood"
     t.index ["name"], name: "index_themes_on_name", unique: true

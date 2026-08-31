@@ -30,6 +30,7 @@ class Theme < ApplicationRecord
 
   validates :category, inclusion: { in: PaletteTaxonomy::CATEGORIES }, allow_nil: true
   validates :mood, inclusion: { in: PaletteTaxonomy::MOODS }, allow_nil: true
+  validates :build_kind, inclusion: { in: BuildKind::KINDS }, allow_nil: true
 
   scope :published, -> { joins(:versions).where(versions: { state: "approved" }).distinct }
   scope :with_latest_version, -> {

@@ -47,6 +47,12 @@
             <%= link_to mood, catalog_path(mood: @mood == mood ? nil : mood), class: "chip #{'is-active' if @mood == mood}" %>
           <% end %>
         </nav>
+        <span class="registry__divider"></span>
+        <nav class="chips" aria-label="Filter by build">
+          <% BuildKind::KINDS.each do |kind| %>
+            <%= link_to kind, catalog_path(build: @build == kind ? nil : kind), class: "chip #{'is-active' if @build == kind}" %>
+          <% end %>
+        </nav>
         <span class="registry__count"><%= pluralize(@themes.size, "theme") %></span>
         <% if @filtered %>
           <%= link_to "reset", themes_path, class: "registry__reset" %>

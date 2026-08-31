@@ -142,6 +142,7 @@ module Publishing
           if @submission.git_import?
             theme.update!(source_url: @submission.source_url, upstream_commit: @upstream_commit)
           end
+          theme.update!(build_kind: BuildKind.classify(version.manifest))
           if theme.category.blank? || theme.mood.blank?
             taxonomy = PaletteTaxonomy.classify(palette.colors, palette.mode)
             theme.update!(

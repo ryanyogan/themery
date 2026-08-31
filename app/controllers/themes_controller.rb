@@ -12,15 +12,17 @@ class ThemesController < ApplicationController
     @mode = params[:mode].presence_in(%w[light dark])
     @category = params[:category].presence_in(PaletteTaxonomy::CATEGORIES)
     @mood = params[:mood].presence_in(PaletteTaxonomy::MOODS)
+    @build = params[:build].presence_in(BuildKind::KINDS)
     @query = params[:q].presence
 
     themes = Theme.published.with_latest_version.order(SORTS[@sort])
     themes = themes.where(mode: @mode) if @mode
     themes = themes.where(category: @category) if @category
     themes = themes.where(mood: @mood) if @mood
+    themes = themes.where(build_kind: @build) if @build
     themes = themes.where("themes.name LIKE ?", "%#{Theme.sanitize_sql_like(@query.downcase)}%") if @query
     @themes = themes
-    @filtered = [ @mode, @category, @mood, @query ].any?
+    @filtered = [ @mode, @category, @mood, @build, @query ].any?
     @pulse = recent_pulse
   end
 
