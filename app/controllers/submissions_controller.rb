@@ -1,5 +1,5 @@
 class SubmissionsController < ApplicationController
-  before_action :require_verified_email
+  before_action :require_verified_email, only: %i[ new create ]
   rate_limit to: 10, within: 1.hour, only: :create, with: -> { redirect_to new_submission_path, alert: "Too many submissions — try again in a bit." }
 
   def new
@@ -14,6 +14,20 @@ class SubmissionsController < ApplicationController
       redirect_to dashboard_path, notice: "Submission received — validating now."
     else
       render :new, status: :unprocessable_entity
+    end
+  end
+
+  # Only dead submissions can be cleared — accepted ones are the audit trail.
+  def destroy
+    submission = Current.user.submissions.find(params[:id])
+    unless submission.failed? || submission.skipped?
+      return redirect_to dashboard_path, alert: "Only failed submissions can be removed."
+    end
+
+    submission.destroy!
+    respond_to do |format|
+      format.turbo_stream { render turbo_stream: turbo_stream.remove(submission) }
+      format.html { redirect_to dashboard_path, notice: "Submission removed." }
     end
   end
 

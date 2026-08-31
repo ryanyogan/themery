@@ -1,21 +1,35 @@
 <% content_for :title, "Create a theme — Themery" %>
 
 <article class="guide">
+  <p class="hero__eyebrow">the guide</p>
   <h1>create an omarchy theme</h1>
-  <p class="guide__lead">A theme is a folder with <strong>two things</strong> in it: a color file and a background image. Everything else is optional. This page takes you from empty folder to published, and nothing here requires git or GitHub.</p>
+  <p class="guide__lead">A theme is a folder with <strong>two things</strong> in it: a color file and a background image. Everything else is optional polish. This page is the whole journey — from empty folder to published, updating itself forever after.</p>
 
-  <div class="guide__tldr">
+  <nav class="guide__toc" aria-label="On this page">
+    <%= link_to "quickstart", "#quickstart", class: "chip" %>
+    <%= link_to "colors.toml", "#colors", class: "chip" %>
+    <%= link_to "backgrounds", "#backgrounds", class: "chip" %>
+    <%= link_to "test locally", "#test", class: "chip" %>
+    <%= link_to "extras", "#extras", class: "chip" %>
+    <%= link_to "advanced", "#advanced", class: "chip" %>
+    <%= link_to "naming", "#naming", class: "chip" %>
+    <%= link_to "publish", "#publish", class: "chip" %>
+    <%= link_to "tips", "#tips", class: "chip" %>
+    <%= link_to "official docs", "#resources", class: "chip" %>
+  </nav>
+
+  <div class="guide__tldr" id="quickstart">
     <p class="install__label">the whole job</p>
     <pre class="guide__tree">my-theme/
 ├── colors.toml          ← your palette (required)
 └── backgrounds/
     └── anything.png     ← at least one real image (required)</pre>
-    <p>Make that, zip it, <%= link_to "upload it", new_submission_path %>. Done. Read on for the palette reference and the optional extras.</p>
+    <p>Make that, push it to a public git repo, <%= link_to "paste the URL here", new_submission_path %>. Done — including every future update, automatically.</p>
   </div>
 
-  <section class="guide__step">
+  <section class="guide__step" id="colors">
     <h2><span class="guide__num">1</span> write colors.toml</h2>
-    <p>One flat file of named colors. omarchy generates configs for your terminal, editor, browser, bar, and lock screen from it — you write the palette once. Copy this and change the values:</p>
+    <p>One flat file of named colors. omarchy generates configs for Foot, Alacritty, Ghostty, Kitty, btop, Chromium, Hyprland, Neovim, Helix, VSCode, Obsidian, and its own shell from it — you write the palette once. Copy this and change the values:</p>
     <pre class="guide__code"># light or dark — tells omarchy (and this site) how to treat you
 mode = "dark"
 
@@ -53,61 +67,105 @@ bright_green = "#a6e3a1"
 bright_cyan = "#94e2d5"
 bright_blue = "#89b4fa"
 bright_magenta = "#f5c2e7"</pre>
-    <p>You don't have to define every key — anything missing falls back sensibly (no <code>orange</code>? yours borrows from <code>yellow</code>). <code>background</code> and <code>foreground</code> are the only two that must exist.</p>
-    <p>Making a light theme? Either set <code>mode = "light"</code> as above, or drop an empty file named <code>light.mode</code> in the theme root — omarchy accepts both, so we do too.</p>
+    <p>Three things worth knowing:</p>
+    <ul class="guide__list">
+      <li>You don't have to define every key — anything missing falls back sensibly (no <code>orange</code>? yours borrows from <code>yellow</code>). Only <code>background</code> and <code>foreground</code> must exist.</li>
+      <li>The ANSI dialect works too: <code>color0</code>–<code>color15</code> (where <code>color1</code> is red, <code>color2</code> green, 9–14 the brights) are understood by omarchy and by this site.</li>
+      <li>Making a light theme? Either set <code>mode = "light"</code>, or drop an empty file named <code>light.mode</code> in the theme root — omarchy accepts both, so we do too.</li>
+    </ul>
   </section>
 
-  <section class="guide__step">
-    <h2><span class="guide__num">2</span> add backgrounds</h2>
-    <p>Put one or more images in <code>backgrounds/</code> — PNG, JPEG, or WebP. omarchy cycles through them; the first one (alphabetically) becomes your theme's preview and share card here, so lead with your best.</p>
+  <section class="guide__step" id="backgrounds">
+    <h2><span class="guide__num">2</span> backgrounds and previews</h2>
+    <p>Put one or more images in <code>backgrounds/</code> — PNG, JPEG, or WebP. omarchy cycles through them with <kbd>Super</kbd>+<kbd>Ctrl</kbd>+<kbd>Space</kbd>.</p>
+    <ul class="guide__list">
+      <li><strong>Lead with your best:</strong> the first background (alphabetically) becomes your theme's main image here and its share card on Discord/X. Name files <code>1-dawn.png</code>, <code>2-dusk.png</code> to control the order.</li>
+      <li><strong>Add real screenshots:</strong> a <code>preview.png</code> (and <code>preview-*.png</code> friends) of your actual desktop shows up in your theme page's gallery strip — it's also what the <%= link_to "official extras page", "https://omarchy.org/themes/" %> displays.</li>
+    </ul>
   </section>
 
-  <section class="guide__step">
+  <section class="guide__step" id="test">
     <h2><span class="guide__num">3</span> try it on your own machine</h2>
     <p>Before publishing, wear it yourself:</p>
     <pre class="guide__code">cp -r my-theme ~/.config/omarchy/themes/my-theme
 omarchy theme set my-theme</pre>
-    <p>Tip: the <strong>Aether</strong> app (<kbd>Super</kbd>+<kbd>Alt</kbd>+<kbd>Space</kbd> → apps menu) is a GUI for experimenting with palettes and finding backgrounds. The stock themes in <code>/usr/share/omarchy/themes</code> are complete worked examples worth stealing from.</p>
+    <p>Two shortcuts worth knowing:</p>
+    <ul class="guide__list">
+      <li>The <strong>Aether</strong> app (<kbd>Super</kbd>+<kbd>Alt</kbd>+<kbd>Space</kbd> → apps) is a GUI for experimenting with palettes and finding backgrounds.</li>
+      <li>The stock themes in <code>/usr/share/omarchy/themes</code> are complete worked examples worth stealing from — every file, correctly shaped.</li>
+    </ul>
   </section>
 
-  <section class="guide__step">
+  <section class="guide__step" id="extras">
     <h2><span class="guide__num">4</span> optional extras</h2>
-    <p>All of these ship fine through Themery if you include them:</p>
+    <p>Everything below ships fine through Themery. Themes that go further get labeled for it in the catalog — <strong>standard</strong> (the essentials), <strong>rounded</strong> (extra wallpapers, previews, or one hand-tuned config), <strong>custom</strong> (two or more hand-tuned extras):</p>
     <table class="guide__table">
       <tr><td><code>icons.theme</code></td><td>an icon set name on one line — any Yaru variant: <code>Yaru</code>, <code>Yaru-blue</code>, <code>Yaru-dark</code>, <code>Yaru-magenta</code>, <code>Yaru-olive</code>, <code>Yaru-prussiangreen</code>, <code>Yaru-purple</code>, <code>Yaru-red</code>, <code>Yaru-sage</code>, <code>Yaru-wartybrown</code>, <code>Yaru-yellow</code></td></tr>
       <tr><td><code>btop.theme</code></td><td>a hand-tuned btop theme, if the generated one isn't enough</td></tr>
       <tr><td><code>chromium.theme</code></td><td>same idea for Chromium</td></tr>
       <tr><td><code>helix.toml</code></td><td>same idea for Helix</td></tr>
-      <tr><td><code>shell.toml</code></td><td>same idea for the omarchy shell</td></tr>
-      <tr><td><code>unlock.png</code> + <code>preview-unlock.png</code></td><td>a custom lock-screen mark (transparent PNG works best; generate the preview with <code>omarchy plymouth preview</code>)</td></tr>
+      <tr><td><code>shell.toml</code></td><td>same idea for the omarchy shell (bar, menus, notifications)</td></tr>
+      <tr><td><code>unlock.png</code> + <code>preview-unlock.png</code></td><td>a custom lock-screen mark — transparent PNG works best; generate the preview with <code>omarchy plymouth preview</code>. Shows under <em>Style → Unlock</em>.</td></tr>
     </table>
   </section>
 
-  <section class="guide__step">
-    <h2><span class="guide__num">5</span> name it</h2>
+  <section class="guide__step" id="advanced">
+    <h2><span class="guide__num">5</span> advanced: theme any app</h2>
+    <p>For apps omarchy doesn't natively theme, users can drop templates in <code>~/.config/omarchy/themed/</code> named <code>[configname].tpl</code>. Your palette flows in through placeholders:</p>
+    <pre class="guide__code"># ~/.config/omarchy/themed/mytool.conf.tpl
+main-color = {{ accent }}
+bg = {{ background_strip }}     # _strip drops the #
+fg = {{ foreground_rgb }}       # _rgb gives decimal r,g,b
+ansi1 = {{ color1 }}            # color0..color15 all available</pre>
+    <p>Custom templates override omarchy's built-ins — so a theme README that ships a <code>.tpl</code> snippet lets users extend your theme to any tool. Full details in the <%= link_to "official chapter", "https://omarchy.org/manual/making-your-own-theme/" %>.</p>
+  </section>
+
+  <section class="guide__step" id="naming">
+    <h2><span class="guide__num">6</span> name it</h2>
     <p>Lowercase; start with a letter, number, or underscore; then letters, numbers, <code>.</code> <code>_</code> <code>+</code> <code>-</code>. So <code>sunset</code>, <code>flexoki_light</code>, and even <code>c++</code> are all fine.</p>
-    <p>Two things to know:</p>
     <ul class="guide__list">
-      <li><code>omarchy-sunset-theme</code> and <code>sunset</code> are <strong>the same name</strong> — the installer strips the decoration, and so do we. Pick either style.</li>
-      <li>The 22 stock theme names (<code>nord</code>, <code>gruvbox</code>, <code>tokyo-night</code>, …) are reserved. A marketplace theme with a stock name would silently merge into the stock theme on people's machines, so we refuse them at upload.</li>
+      <li><code>omarchy-sunset-theme</code> and <code>sunset</code> are <strong>the same name</strong> — the installer strips the decoration, and so do we. The GitHub convention is <code>omarchy-[name]-theme</code>; use it or don't.</li>
+      <li>The 22 stock theme names (<code>nord</code>, <code>gruvbox</code>, <code>tokyo-night</code>, …) are reserved. A marketplace theme with a stock name would silently merge into the stock theme on people's machines, so we refuse them at submission.</li>
     </ul>
   </section>
 
-  <section class="guide__step">
-    <h2><span class="guide__num">6</span> publish it here</h2>
-    <p>Push your theme folder to any public git repo (GitHub, Codeberg, wherever), then <%= link_to "paste its https:// URL here", new_submission_path %>. Older themes that predate <code>colors.toml</code> are converted automatically from their <code>alacritty.toml</code>, the same way omarchy itself handles them.</p>
-    <p>From then on your repo is the source of truth: <strong>Themery checks it hourly</strong>, and when you push changes the new version flows into review on its own — no re-submitting, ever.</p>
-    <p>What happens next, in order:</p>
+  <section class="guide__step" id="publish">
+    <h2><span class="guide__num">7</span> publish it here</h2>
+    <p>Push your theme folder to any public git repo (GitHub, Codeberg, wherever), then <%= link_to "paste its https:// URL", new_submission_path %>. Older themes that predate <code>colors.toml</code> are converted automatically from their <code>alacritty.toml</code>, the same way omarchy itself handles them.</p>
+    <p><strong>From then on your repo is the source of truth.</strong> Themery checks it hourly; push a change and the new version flows into review by itself — no re-submitting, ever. What happens to every version, in order:</p>
     <ol class="guide__list">
-      <li><strong>Instant checks.</strong> Parseable <code>colors.toml</code>, at least one real background, a safe archive, an available name. Problems come back to your dashboard immediately, in plain words.</li>
-      <li><strong>The strip.</strong> Files that carry code — <code>*.lua</code>, <code>alacritty.toml</code>, <code>foot.ini</code>, <code>ghostty.conf</code>, <code>kitty.conf</code>, <code>vscode.json</code> — are removed. This isn't a judgment call: omarchy refuses to install them from any downloaded theme and regenerates them locally from your <code>colors.toml</code>, so shipping them does nothing but sit on disk. Your dashboard shows exactly what was removed and why, every time.</li>
-      <li><strong>A human look.</strong> Review is editorial only — is it a real theme with an honest name — because safety was already handled above. You'll see the verdict flip live on <%= link_to "your dashboard", dashboard_path %>.</li>
-      <li><strong>Live.</strong> Your theme gets a page, a generated preview, a one-line install command, and real install counts measured from actual installs. New versions go through the same pipeline; people who installed your theme receive them via omarchy's normal update.</li>
+      <li><strong>Instant checks.</strong> Parseable <code>colors.toml</code>, at least one real background, a safe archive, an available name. Problems land on your dashboard immediately, in plain words.</li>
+      <li><strong>The strip.</strong> Files that carry code — <code>*.lua</code>, <code>alacritty.toml</code>, <code>foot.ini</code>, <code>ghostty.conf</code>, <code>kitty.conf</code>, <code>vscode.json</code> — are removed. This isn't a judgment call: omarchy refuses to install them from any downloaded theme and regenerates them locally from your <code>colors.toml</code>. Your dashboard shows exactly what was removed and why, every time.</li>
+      <li><strong>A human look.</strong> Review is editorial only — is it a real theme with an honest name — because safety was handled above. The verdict flips live on <%= link_to "your dashboard", dashboard_path %>.</li>
+      <li><strong>Live.</strong> A page, a one-line install command, real install counts measured from actual <code>git clone</code> traffic. People who installed your theme receive updates through omarchy's normal update flow once each version is approved.</li>
     </ol>
+    <p class="guide__aside">Want on the official list too? The <%= link_to "omarchy.org extras page", "https://omarchy.org/themes/" %> takes themes by pull request to <%= link_to "omarchy-site", "https://github.com/basecamp/omarchy-site" %>. The two aren't exclusive — do both.</p>
   </section>
 
-  <section class="guide__step">
-    <h2><span class="guide__num">?</span> why did my neovim.lua disappear</h2>
-    <p>The stock vendored themes ship one, so this surprises people: any <code>.lua</code> file is executable code, and <code>omarchy theme install</code> won't stage it from a downloaded theme — yours included. omarchy generates the Neovim colors from your <code>colors.toml</code> instead. Nothing is lost; the strip just makes visible what the installer was already going to do.</p>
+  <section class="guide__step" id="tips">
+    <h2><span class="guide__num">8</span> tips from the catalog</h2>
+    <ul class="guide__list">
+      <li><strong>Define all eight terminal colors.</strong> Fallbacks keep things working, but <code>ls</code>, diffs, and syntax highlighting are where a theme lives or dies. Test with <code>ls -la</code>, a git diff, and btop open.</li>
+      <li><strong>Contrast beats vibes.</strong> Check <code>foreground</code> on <code>background</code> and on <code>selection</code> — selected text that vanishes is the most common review note.</li>
+      <li><strong>The accent works hard.</strong> It's your window borders, your highlights, and the border on your card here. Pick something that survives against your darkest and lightest background.</li>
+      <li><strong>Light themes: set the mode.</strong> An explicit <code>mode = "light"</code> (or a <code>light.mode</code> file) beats luminance guessing every time.</li>
+      <li><strong>Write changelog-worthy commits.</strong> The auto-sync pulls your latest push; a clear commit message makes the reviewer's 30 seconds easy.</li>
+      <li><strong>Screenshot at your real resolution.</strong> <code>preview.png</code> is shown large — a crisp full-desktop capture with a terminal, editor, and btop open shows the theme actually living.</li>
+    </ul>
+  </section>
+
+  <section class="guide__step" id="resources">
+    <h2><span class="guide__num">9</span> official omarchy docs</h2>
+    <p>Everything above is distilled from these — the primary sources when you want depth:</p>
+    <table class="guide__table">
+      <tr><td><%= link_to "Making your own theme", "https://omarchy.org/manual/making-your-own-theme/" %></td><td>the official chapter this guide tracks — file list, template system, distribution rules</td></tr>
+      <tr><td><%= link_to "Themes", "https://omarchy.org/manual/themes/" %></td><td>how theme switching, installing, and removing work as a user</td></tr>
+      <tr><td><%= link_to "Backgrounds", "https://omarchy.org/manual/backgrounds/" %></td><td>background cycling and per-theme wallpapers</td></tr>
+      <tr><td><%= link_to "Fonts", "https://omarchy.org/manual/fonts/" %></td><td>changing system fonts (fonts aren't part of themes)</td></tr>
+      <tr><td><%= link_to "Common tweaks", "https://omarchy.org/manual/common-tweaks/" %></td><td>the customizations people reach for first</td></tr>
+      <tr><td><%= link_to "The extras catalog", "https://omarchy.org/themes/" %></td><td>the official community theme list</td></tr>
+      <tr><td><%= link_to "omarchy on GitHub", "https://github.com/basecamp/omarchy" %></td><td>the source — including <code>omarchy-theme-set</code>, the exact script that installs your theme</td></tr>
+      <tr><td><%= link_to "The full manual", "https://omarchy.org/manual" %></td><td>everything else</td></tr>
+    </table>
   </section>
 </article>

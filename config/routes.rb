@@ -30,7 +30,7 @@ Rails.application.routes.draw do
   end
 
   resource :dashboard, only: :show
-  resources :submissions, only: %i[ new create ]
+  resources :submissions, only: %i[ new create destroy ]
   get "guide", to: "guides#show"
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

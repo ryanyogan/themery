@@ -17,7 +17,7 @@
   <% if @themes.any? %>
     <table class="dashtable">
       <thead>
-        <tr><th>theme</th><th>latest</th><th>state</th><th>★</th><th>↓</th><th></th></tr>
+        <tr><th>theme</th><th>latest</th><th>state</th><th>★</th><th>↓</th><th>updates</th></tr>
       </thead>
       <tbody>
         <% @themes.each do |theme| %>
@@ -28,7 +28,24 @@
             <td><span class="state state--<%= newest&.state %>"><%= newest&.state %></span></td>
             <td><%= theme.stars_count %></td>
             <td><%= theme.installs_count %></td>
-            <td><%= link_to "new version", new_submission_path(theme_name: theme.name), class: "dashtable__action" %></td>
+            <td>
+              <% if theme.source_url %>
+                <span class="sync" tabindex="0">
+                  <span class="sync__badge">⟳ automatic</span>
+                  <span class="sync__pop" role="tooltip">
+                    <strong>You never re-submit.</strong> Themery checks
+                    <code><%= theme.source_url.delete_prefix("https://") %></code>
+                    every hour. Push to your repo and the new version is pulled,
+                    validated, stripped, and placed in the review queue on its own —
+                    you'll see it appear below, and installed users get it through
+                    omarchy's normal update once it's approved.
+                  </span>
+                </span>
+              <% else %>
+                <%= link_to "submit update", new_submission_path(theme_name: theme.name), class: "dashtable__action",
+                      title: "This theme has no upstream repo yet — submitting one turns updates automatic" %>
+              <% end %>
+            </td>
           </tr>
         <% end %>
       </tbody>
@@ -36,14 +53,32 @@
   <% else %>
     <div class="empty">
       <p class="empty__glyph">❯ ls<span class="pline__cursor"></span></p>
-      <p>You haven't published anything yet. <%= link_to "Upload your first theme", new_submission_path %> or read <%= link_to "the guide", guide_path %>.</p>
+      <p>You haven't published anything yet. <%= link_to "Submit your first theme", new_submission_path %> or read <%= link_to "the guide", guide_path %>.</p>
     </div>
   <% end %>
 
-  <% if @submissions.any? %>
-    <h2 class="dash__subtitle">submissions</h2>
+  <% if @processing.any? %>
+    <h2 class="dash__subtitle">processing</h2>
     <ol class="sublist">
-      <%= render partial: "submissions/submission", collection: @submissions %>
+      <%= render partial: "submissions/submission", collection: @processing %>
     </ol>
+  <% end %>
+
+  <% if @accepted.any? %>
+    <h2 class="dash__subtitle">accepted</h2>
+    <ol class="sublist">
+      <%= render partial: "submissions/submission", collection: @accepted %>
+    </ol>
+  <% end %>
+
+  <% if @failed.any? %>
+    <details class="failstack">
+      <summary class="dash__subtitle failstack__summary">
+        <%= pluralize(@failed.size, "failed or skipped submission") %> — expand to review or clear
+      </summary>
+      <ol class="sublist">
+        <%= render partial: "submissions/submission", collection: @failed %>
+      </ol>
+    </details>
   <% end %>
 </section>

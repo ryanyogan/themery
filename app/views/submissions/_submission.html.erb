@@ -4,6 +4,10 @@
     <span class="sub__name"><%= submission.theme_name %></span>
     <span class="sub__kind"><%= submission.kind.humanize.downcase %></span>
     <span class="sub__when"><%= time_ago_in_words(submission.created_at) %> ago</span>
+    <% if submission.failed? || submission.skipped? %>
+      <%= button_to "clear", submission_path(submission), method: :delete, class: "sub__clear",
+            title: "Remove this submission" %>
+    <% end %>
   </div>
 
   <% if submission.failed? && submission.error_report.any? %>
