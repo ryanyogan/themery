@@ -1,3 +1,6 @@
+require "rubygems/package"
+require "zlib"
+
 module Publishing
   # The two human verdicts on a pending Version. Approval is the moment a
   # Version becomes reachable by git clients: the stored normalized bundle is
