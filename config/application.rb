@@ -18,7 +18,9 @@ module Themery
 
     # Where the bare git repos the stock omarchy client clones live. In
     # production this must sit on the persistent volume (set REPOS_ROOT).
-    config.x.repos_root = ENV.fetch("REPOS_ROOT") { Rails.root.join("storage/repos").to_s }
+    config.x.repos_root = ENV.fetch("REPOS_ROOT") {
+      File.join(ENV.fetch("DATA_ROOT") { Rails.root.join("storage").to_s }, "repos")
+    }
 
     # Git traffic (clone/pull of hosted theme repos) is static-file serving
     # plus one telemetry write — it skips sessions, cookies, and CSRF by
