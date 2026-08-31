@@ -1,0 +1,34 @@
+<h1>Create your account</h1>
+
+<%= form_with model: @user, url: registration_path do |form| %>
+  <% if @user.errors.any? %>
+    <div class="form-errors">
+      <ul>
+        <% @user.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :username %>
+    <%= form.text_field :username, required: true, autofocus: true, autocomplete: "username" %>
+  </div>
+  <div>
+    <%= form.label :email_address %>
+    <%= form.email_field :email_address, required: true, autocomplete: "email" %>
+  </div>
+  <div>
+    <%= form.label :password %>
+    <%= form.password_field :password, required: true, autocomplete: "new-password", maxlength: 72 %>
+  </div>
+  <div>
+    <%= form.label :password_confirmation %>
+    <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password", maxlength: 72 %>
+  </div>
+
+  <%= form.submit "Sign up" %>
+<% end %>
+
+<p><%= link_to "Already have an account? Sign in", new_session_path %></p>

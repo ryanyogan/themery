@@ -1,0 +1,7 @@
+Hey <%= @user.username %>,
+
+Confirm this is your email address to unlock publishing on Themery:
+
+<%= email_verification_url(token: @token) %>
+
+This link expires in 2 days. If you didn't create a Themery account, ignore this email.

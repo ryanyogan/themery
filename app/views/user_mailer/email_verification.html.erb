@@ -1,0 +1,7 @@
+<p>Hey <%= @user.username %>,</p>
+
+<p>Confirm this is your email address to unlock publishing on Themery:</p>
+
+<p><%= link_to "Verify my email", email_verification_url(token: @token) %></p>
+
+<p>This link expires in 2 days. If you didn't create a Themery account, ignore this email.</p>
