@@ -11,6 +11,7 @@
       try { const t = localStorage.getItem("themery-scheme"); if (t) document.documentElement.dataset.theme = t; } catch {}
     </script>
 
+    <%= turbo_refreshes_with method: :morph, scroll: :preserve %>
     <%= yield :head %>
 
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
@@ -31,6 +32,10 @@
 
       <nav class="bar__nav">
         <%= link_to "browse", root_path, class: "bar__link #{'is-current' if current_page?(root_path)}" %>
+        <%= link_to "guide", guide_path, class: "bar__link #{'is-current' if current_page?(guide_path)}" %>
+        <% if authenticated? %>
+          <%= link_to "publish", dashboard_path, class: "bar__link #{'is-current' if current_page?(dashboard_path)}" %>
+        <% end %>
       </nav>
 
       <div class="bar__end">

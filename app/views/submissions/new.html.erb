@@ -1,0 +1,48 @@
+<% content_for :title, "New submission — Themery" %>
+
+<section class="submitform">
+  <h1>publish a theme</h1>
+  <p class="submitform__lead">
+    Upload an archive or import a git repo. Every submission is checked mechanically
+    (a parseable <code>colors.toml</code>, at least one real background, nothing unsafe),
+    stripped of anything executable, and then reviewed by a human before it goes live.
+    First time? <%= link_to "Read the guide", guide_path %>.
+  </p>
+
+  <%= form_with model: @submission, url: submissions_path do |form| %>
+    <% if @submission.errors.any? %>
+      <div class="form-errors">
+        <ul>
+          <% @submission.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div>
+      <%= form.label :theme_name, "theme name" %>
+      <%= form.text_field :theme_name, required: true, placeholder: "e.g. tidepool", autofocus: @submission.theme_name.blank? %>
+      <p class="hint">Lowercase letters, numbers, hyphens. This becomes the install URL. Use an existing theme's name to publish its next version.</p>
+    </div>
+
+    <div>
+      <%= form.label :archive, "theme archive (.zip or .tar.gz, up to 50MB)" %>
+      <%= form.file_field :archive, accept: ".zip,.tar.gz,.tgz,application/zip,application/gzip" %>
+    </div>
+
+    <p class="submitform__or">— or import from a public repo —</p>
+
+    <div>
+      <%= form.label :source_url, "git URL (https only)" %>
+      <%= form.text_field :source_url, placeholder: "https://github.com/you/your-theme" %>
+    </div>
+
+    <div>
+      <%= form.label :changelog, "changelog note (optional)" %>
+      <%= form.text_area :changelog, rows: 3, placeholder: "What's new in this version?" %>
+    </div>
+
+    <%= form.submit "Submit for review" %>
+  <% end %>
+</section>

@@ -1,0 +1,49 @@
+<% content_for :title, "Publish — Themery" %>
+<%= turbo_stream_from Current.user, :dashboard %>
+
+<section class="dash">
+  <header class="dash__head">
+    <h1 class="dash__title">~/publish</h1>
+    <%= link_to "+ new theme", new_submission_path, class: "dash__new" %>
+  </header>
+
+  <% unless Current.user.verified? %>
+    <div class="notice notice--warn">
+      <p>Verify your email address to publish. Didn't get the link?</p>
+      <%= button_to "resend verification email", email_verifications_path, class: "notice__button" %>
+    </div>
+  <% end %>
+
+  <% if @themes.any? %>
+    <table class="dashtable">
+      <thead>
+        <tr><th>theme</th><th>latest</th><th>state</th><th>★</th><th>↓</th><th></th></tr>
+      </thead>
+      <tbody>
+        <% @themes.each do |theme| %>
+          <% newest = theme.versions.max_by(&:number) %>
+          <tr>
+            <td><%= theme.published? ? link_to(theme.name, theme_path(theme.name)) : theme.name %></td>
+            <td>v<%= newest&.number %></td>
+            <td><span class="state state--<%= newest&.state %>"><%= newest&.state %></span></td>
+            <td><%= theme.stars_count %></td>
+            <td><%= theme.installs_count %></td>
+            <td><%= link_to "new version", new_submission_path(theme_name: theme.name), class: "dashtable__action" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <div class="empty">
+      <p class="empty__glyph">❯ ls<span class="pline__cursor"></span></p>
+      <p>You haven't published anything yet. <%= link_to "Upload your first theme", new_submission_path %> or read <%= link_to "the guide", guide_path %>.</p>
+    </div>
+  <% end %>
+
+  <% if @submissions.any? %>
+    <h2 class="dash__subtitle">submissions</h2>
+    <ol class="sublist">
+      <%= render partial: "submissions/submission", collection: @submissions %>
+    </ol>
+  <% end %>
+</section>

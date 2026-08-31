@@ -126,7 +126,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_31_144909) do
     t.json "colors"
     t.datetime "created_at", null: false
     t.string "mode"
-    t.json "normalization_ledger", default: {}, null: false
+    t.json "normalization_ledger", default: [], null: false
     t.integer "number", null: false
     t.string "pack_name"
     t.text "review_note"

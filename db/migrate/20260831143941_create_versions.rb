@@ -7,7 +7,7 @@ class CreateVersions < ActiveRecord::Migration[8.1]
       t.text :changelog
       t.string :mode
       t.json :colors
-      t.json :normalization_ledger, null: false, default: {}
+      t.json :normalization_ledger, null: false, default: []
       t.text :review_note
       t.datetime :approved_at
       t.string :pack_name

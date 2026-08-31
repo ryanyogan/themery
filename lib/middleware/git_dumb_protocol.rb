@@ -28,7 +28,6 @@ class GitDumbProtocol
 
   def initialize(app)
     @app = app
-    @files = Rack::Files.new(HostedRepo.root.to_s)
   end
 
   def call(env)
@@ -44,11 +43,19 @@ class GitDumbProtocol
       return not_found
     end
 
-    record_pack_fetch(env, name, file)
-    serve(env, name, file)
+    response = serve(env, name, file)
+    # Telemetry counts only what was actually served — a request for a pack
+    # that doesn't exist writes nothing, so counters can't be inflated for
+    # free.
+    record_pack_fetch(env, name, file) if response[0] < 300
+    response
   end
 
   private
+    def files
+      Rack::Files.new(HostedRepo.root.to_s)
+    end
+
     def parse(env)
       return nil unless %w[GET HEAD].include?(env[Rack::REQUEST_METHOD])
       repo = REPO_PATH.match(env[Rack::PATH_INFO]) or return nil
@@ -57,7 +64,7 @@ class GitDumbProtocol
     end
 
     def serve(env, name, file)
-      @files.call(env.merge(Rack::PATH_INFO => "/#{name}.git/#{file}"))
+      files.call(env.merge(Rack::PATH_INFO => "/#{name}.git/#{file}"))
     end
 
     def record_pack_fetch(env, name, file)

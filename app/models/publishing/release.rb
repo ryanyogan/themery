@@ -21,6 +21,7 @@ module Publishing
         version.update!(state: "approved", approved_at: Time.current, review_note: note, pack_name:)
         version.theme.update!(mode: version.mode)
       end
+      notify_author(version)
       version
     end
 
@@ -28,7 +29,13 @@ module Publishing
       raise ArgumentError, "only a pending Version can be rejected" unless version.pending?
 
       version.update!(state: "rejected", review_note: note)
+      notify_author(version)
       version
+    end
+
+    # The dashboard's live state flip: publishing should feel alive.
+    def self.notify_author(version)
+      Turbo::StreamsChannel.broadcast_refresh_to([ version.theme.author, :dashboard ])
     end
 
     def self.release_message(version)

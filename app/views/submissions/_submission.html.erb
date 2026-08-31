@@ -1,0 +1,38 @@
+<li class="sub" id="<%= dom_id(submission) %>">
+  <div class="sub__row">
+    <span class="state state--<%= submission.state %>"><%= submission.state %></span>
+    <span class="sub__name"><%= submission.theme_name %></span>
+    <span class="sub__kind"><%= submission.kind.humanize.downcase %></span>
+    <span class="sub__when"><%= time_ago_in_words(submission.created_at) %> ago</span>
+  </div>
+
+  <% if submission.failed? && submission.error_report.any? %>
+    <ul class="sub__errors">
+      <% submission.error_report.each do |error| %>
+        <li><%= error %></li>
+      <% end %>
+    </ul>
+  <% end %>
+
+  <% if submission.accepted? && submission.version %>
+    <p class="sub__accepted">
+      became <strong>v<%= submission.version.number %></strong> —
+      <% case submission.version.state %>
+      <% when "pending" %>waiting for review
+      <% when "approved" %><span class="state--approved-text">approved</span> and installable
+      <% when "rejected" %><span class="state--rejected-text">rejected</span><%= ": #{submission.version.review_note}" if submission.version.review_note.present? %>
+      <% end %>
+    </p>
+    <% ledger = submission.version.normalization_ledger %>
+    <% if ledger.any? %>
+      <details class="sub__ledger">
+        <summary><%= pluralize(ledger.count, "file") %> changed at normalization — see what and why</summary>
+        <ul>
+          <% ledger.each do |entry| %>
+            <li><code><%= entry["file"] %></code> <strong><%= entry["action"] %></strong> — <%= entry["reason"] %></li>
+          <% end %>
+        </ul>
+      </details>
+    <% end %>
+  <% end %>
+</li>

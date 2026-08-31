@@ -19,6 +19,8 @@ module Publishing
   # A single wrapping top-level directory (people zip the folder, not its
   # contents) is hoisted so colors.toml lands at the root like a git clone.
   class Extraction
+    class TooLarge < StandardError; end
+
     Result = Data.define(:root, :errors) do
       def ok? = errors.empty?
     end
@@ -48,6 +50,8 @@ module Publishing
         @errors << "Unsupported archive format — upload a .zip or .tar.gz"
       end
       hoist_wrapper_directory if @errors.empty?
+      Result.new(root: @dest, errors: @errors)
+    rescue TooLarge
       Result.new(root: @dest, errors: @errors)
     rescue Zip::Error, Zlib::Error, Gem::Package::Error => e
       Result.new(root: @dest, errors: @errors + [ "Archive is corrupt or unreadable (#{e.class.name.demodulize})" ])
@@ -128,7 +132,7 @@ module Publishing
           @written += chunk.bytesize
           if @written > MAX_EXTRACTED_BYTES
             @errors << "Archive expands past the #{MAX_EXTRACTED_BYTES / 1.megabyte}MB limit"
-            raise Zip::Error, "size cap"
+            raise TooLarge
           end
           out.write(chunk)
         end

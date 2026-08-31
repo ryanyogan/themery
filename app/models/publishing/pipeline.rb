@@ -17,12 +17,19 @@ module Publishing
       new(submission).process
     end
 
+    MAX_ARCHIVE_BYTES = 50.megabytes
+
     def initialize(submission)
       @submission = submission
       @errors = []
     end
 
     def process
+      unless @submission.user.verified?
+        @errors << "Verify your email address before publishing"
+        return fail!
+      end
+
       Dir.mktmpdir("themery-submission") do |workspace|
         root = Pathname(workspace)
         stage_tree(root)
@@ -50,6 +57,10 @@ module Publishing
       def stage_archive(root)
         unless @submission.archive.attached?
           @errors << "No archive was uploaded"
+          return
+        end
+        if @submission.archive.blob.byte_size > MAX_ARCHIVE_BYTES
+          @errors << "Archive is larger than the #{MAX_ARCHIVE_BYTES / 1.megabyte}MB limit"
           return
         end
 

@@ -1,0 +1,46 @@
+<% content_for :title, "Create a theme — Themery" %>
+
+<article class="guide">
+  <h1>create an omarchy theme</h1>
+  <p class="guide__lead">From zero to published without leaving this site. An omarchy theme is colors and images — nothing else.</p>
+
+  <section class="guide__step">
+    <h2><span class="guide__num">1</span> make the two things every theme needs</h2>
+    <p>A theme is a folder with a <code>colors.toml</code> and a <code>backgrounds/</code> directory holding at least one image:</p>
+    <pre class="guide__tree">my-theme/
+├── colors.toml
+└── backgrounds/
+    └── dawn.png</pre>
+  </section>
+
+  <section class="guide__step">
+    <h2><span class="guide__num">2</span> write colors.toml</h2>
+    <p>Start from this skeleton and swap in your palette. <code>mode</code> tells omarchy (and this site) whether you're a light or dark theme:</p>
+    <pre class="guide__code">mode = "dark"
+
+accent = "#89b4fa"
+selection = "#45475a"
+muted = "#585b70"
+
+background = "#1e1e2e"
+foreground = "#cdd6f4"
+
+red = "#f38ba8"
+yellow = "#f9e2af"
+green = "#a6e3a1"
+cyan = "#94e2d5"
+blue = "#89b4fa"
+magenta = "#f5c2e7"</pre>
+    <p>That's the minimum that renders well. Any theme installed on your machine (<code>~/.local/share/omarchy/themes/</code>) is a complete worked example.</p>
+  </section>
+
+  <section class="guide__step">
+    <h2><span class="guide__num">3</span> zip it and upload</h2>
+    <p><%= link_to "Submit it here", new_submission_path %> — you'll get instant feedback if anything's off (missing colors, unreadable images, unsafe archive). Files omarchy refuses to install, like <code>neovim.lua</code> or terminal configs, are stripped automatically and you'll see exactly what was removed and why.</p>
+  </section>
+
+  <section class="guide__step">
+    <h2><span class="guide__num">4</span> a human takes one look</h2>
+    <p>Review is editorial only — is it a real theme with an honest name — because safety was already handled mechanically. Once approved, your theme is installable with one command and you'll see install counts, stars, and reviews on <%= link_to "your dashboard", dashboard_path %>.</p>
+  </section>
+</article>

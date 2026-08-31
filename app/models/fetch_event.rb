@@ -3,6 +3,10 @@
 # a client that fetched the theme's base pack was installing; one that
 # fetched only newer packs was updating. The counters on Theme are recomputed
 # from here — this table is the single source of truth for reach metrics.
+#
+# client_hash folds in the calendar day, so "installs" precisely means
+# distinct client-days that fetched the base pack — a re-clone three days
+# later counts again, a clone-then-pull the same day counts once.
 class FetchEvent < ApplicationRecord
   belongs_to :theme
 
